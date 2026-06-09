@@ -10,17 +10,17 @@ O público-alvo deste documento inclui desenvolvedores de software, engenheiros 
 
 ## Arquitetura de Referência
 
-O sistema adota um padrão arquitetural baseado em **Monolito Modular** para a API de produção, otimizando o custo operacional e simplificando o deployment na fase piloto, mantendo baixo acoplamento entre os domínios para facilitar uma futura migração para microsserviços se necessário.
+O sistema adota um padrão arquitetural de **Full-Stack Monolith** utilizando **Next.js (App Router)**. O Next.js consolida tanto a camada de interface (Client-Side Rendering e Server-Side Rendering) quanto a camada de API Backend (Route Handlers e Server Actions) em uma única base de código integrada, simplificando o desenvolvimento, testes e implantação na fase piloto.
 
 ```mermaid
 graph TD
     subgraph "Cliente (Frontend)"
-        A["Electron App - Desktop Shell"] -->|Carrega localmente| B["Vite + React SPA"]
+        A["Electron App - Desktop Shell"] -->|Carrega localmente| B["Next.js UI (Client Components)"]
         C["Navegador Web / Mobile"] -->|Acessa via HTTPS| B
     end
 
-    subgraph "API Gateway / Servidor (Backend)"
-        B -->|Chamadas HTTPS REST| D["API Node.js + Express/NestJS"]
+    subgraph "Servidor de Aplicação (Next.js)"
+        B -->|Server Actions / API Requests| D["Next.js Server Components & Route Handlers"]
     end
 
     subgraph "Camada de Dados"
@@ -36,15 +36,14 @@ graph TD
 
 ### Decisões Técnicas Resumidas:
 
-- **Estilo Arquitetural**: Monolito Modular com separação clara de pastas por domínio (usuários, doações, gamificação, logística e auditoria).
+- **Estilo Arquitetural**: Full-stack Monolith estruturado sob a pasta `/app` do Next.js (App Router), separando rotas visuais (`/app/dashboard`, etc.) de rotas de dados/APIs (`/app/api/...`) com clara divisão lógica de domínios.
 - **Componentes Principais**:
-  - **Front-end**: SPA React empacotado localmente com Electron (para fins de desktop) ou servido como Web App responsivo.
-  - **Back-end**: Servidor Node.js em TypeScript expondo APIs RESTful.
-  - **Banco de Dados**: PostgreSQL com extensão espacial PostGIS para armazenamento de localizações exatas e consultas eficientes de proximidade por coordenadas.
-- **Serviço de Observabilidade**: Logging centralizado no backend com a biblioteca Winston formatando logs em JSON. Em produção, integração com Sentry para captura de erros no frontend e backend, e métricas via Prometheus/Grafana.
-- **Autenticação e Autorização**: Mecanismo de autenticação stateless via tokens JWT (JSON Web Tokens). O controle de acesso é baseado em perfis de acesso (RBAC - Role-Based Access Control) diferenciando Doador, ONG e Administrador.
-- **Protocolos de Comunicação**: HTTPS para requisições síncronas RESTful API. Emissão de tokens de retirada e alertas em tempo real suportados via WebSockets (Socket.io).
-- **Infraestrutura de Deployment**: Empacotamento do backend em contêineres Docker executados em serviços de container de nuvem (como AWS ECS Fargate). O frontend web será hospedado em plataformas de Edge Hosting (como Vercel ou AWS CloudFront).
+  - **Frontend/Backend Unificado**: Next.js servindo componentes do lado servidor (RSC) e do lado cliente, empacotável para Desktop com Electron (configurado para carregar rotas locais estáticas ou apontar para o servidor dev/produção web).
+  - **Banco de Dados**: PostgreSQL com extensão espacial PostGIS para armazenamento de coordenadas e buscas espaciais de doações baseadas em distância.
+- **Serviço de Observabilidade**: Winston/Pino integrado aos Route Handlers do Next.js para formatação estruturada de logs. Sentry SDK para monitoramento de erros de runtime (Client e Server do Next.js), e Vercel Analytics/Prometheus para telemetria.
+- **Autenticação e Autorização**: Tokens JWT baseados em Cookies HttpOnly e Server Actions de autenticação, controlando o fluxo RBAC (Role-Based Access Control) diretamente nas rotas e layouts do Next.js Middleware.
+- **Protocolos de Comunicação**: HTTPS para requisições REST/Server Actions. Notificações de retirada em tempo real e chats de suporte utilizando WebSockets (via Socket.io em servidor autônomo auxiliar ou Serverless WebSockets como Pusher/AWS API Gateway).
+- **Infraestrutura de Deployment**: Hospedagem da aplicação Next.js unificada na Vercel (nativo) ou em contêineres Docker na AWS (ECS Fargate) atrás de um Load Balancer.
 
 ---
 
@@ -52,34 +51,104 @@ graph TD
 
 ### Frontend
 
-- **Linguagem**: JavaScript (ES6+) / TypeScript.
-- **Framework web**: React (estruturado através do Vite para builds ultra-rápidos).
-- **Estilização**: Vanilla CSS (CSS puro utilizando Variáveis CSS para tokens de design, Flexbox e Grid Layouts).
-- **Biblioteca de Mapas**: Leaflet.js para renderização do mapa interativo com tiles livres do OpenStreetMap.
-- **Wrapper Desktop**: Electron (encapsula o build estático do React em uma janela nativa do sistema operacional).
+- **Linguagem**: TypeScript / JavaScript (ES6+).
+- **Framework web**: Next.js (App Router) + React 18+.
+- **Estilização**: Vanilla CSS (CSS puro utilizando Variáveis CSS, Flexbox e Grid Layouts para performance e fidelidade ao design).
+- **Biblioteca de Mapas**: Leaflet.js (ou React-Leaflet) para mapas interativos OpenStreetMap.
+- **Wrapper Desktop**: Electron (encapsula a aplicação Next.js para uso nativo no Windows).
 
 ### Backend
 
 - **Linguagem**: TypeScript.
-- **Runtime**: Node.js (v18 ou superior).
-- **Framework**: Express.js (simplificado para MVP) ou NestJS (para estrutura modular robusta).
-- **Persistência**: PostgreSQL (produção) com extensão espacial PostGIS. LocalStorage simulado (MVP).
-- **ORM**: Prisma ORM para mapeamento objeto-relacional estruturado e migrações tipadas.
+- **Runtime**: Node.js (v18 ou superior) integrado no Next.js API Routes (Route Handlers).
+- **Framework**: Next.js Route Handlers e Server Actions.
+- **Persistência**: PostgreSQL com extensão espacial PostGIS. LocalStorage (para cache local offline e MVP).
+- **ORM**: Prisma ORM para queries seguras e migrações tipadas.
+
+### Stack de Testes
+
+- **Testes Unitários (Frontend/Backend)**: 
+  - Jest + React Testing Library (para componentes, custom hooks e páginas do Next.js).
+  - Vitest / Jest (para lógica de negócio isolada, helpers matemáticos e validadores Zod).
+- **Testes de Contrato**:
+  - Pact.io (para garantir a integridade de chamadas HTTP entre o front-end Electron/Web e os Route Handlers do Next.js).
+- **Testes de Integração**:
+  - Supertest + Vitest/Jest (para testar os Route Handlers do Next.js simulando requisições e verificando respostas).
+  - Prisma Client mockado ou rodando em banco Docker local para testar queries e regras de banco de dados.
+- **Testes End-to-End (E2E)**:
+  - Playwright ou Cypress (para simulação de jornadas completas como o fluxo "Doador cadastra alimento -> ONG visualiza no mapa e reserva -> Doador valida com token").
+- **Testes de Regressão Visual**:
+  - Playwright Visual Comparisons (comparação de screenshots para evitar desconfiguração do layout responsivo e mapa).
 
 ### Stack de Desenvolvimento
 
-- **IDE**: Visual Studio Code (VS Code) com extensões de ESLint, Prettier e Prisma.
+- **IDE**: Visual Studio Code (VS Code) com extensões de ESLint, Prettier, Prisma e Jest.
 - **Gerenciamento de pacotes**: npm (Node Package Manager).
 - **Ambiente de desenvolvimento local**: Docker Compose contendo contêineres do PostgreSQL/PostGIS e do Redis.
 - **Infraestrutura como Código (IaC)**: Terraform para provisionamento de recursos de produção na AWS.
-- **Pipeline CI/CD**: GitHub Actions para execução de testes automatizados, checagens estáticas (Linter), build do instalador Electron e deployment automático na nuvem.
+- **Pipeline CI/CD**: GitHub Actions executando linter, testes unitários, testes de contrato, testes de integração em container, compilação estática do Next.js, empacotamento Electron e deploy automatizado.
 
 ### Integrações
 
-- **Persistência**: LocalStorage (MVP) / Banco de dados relacional PostgreSQL remoto.
-- **Deployment**: Electron Builder (para empacotar em `.exe` no Windows) e Vercel / AWS Amplify (para o frontend Web).
-- **Segurança (Autenticação e Autorização)**: Biblioteca nativa `bcryptjs` no backend para hashing de senhas e `jsonwebtoken` para emissão e assinatura de chaves de acesso.
-- **Observabilidade**: Console logging formatado + Sentry SDK integrado no frontend e backend.
+- **Persistência**: LocalStorage (MVP/Cache offline) / Banco de dados relacional PostgreSQL remoto.
+- **Deployment**: Electron Builder (instalador Desktop `.exe`) e Vercel (servidor Web nativo do Next.js) / AWS ECS (Docker).
+- **Segurança (Autenticação e Autorização)**: `bcryptjs` no servidor para hash de senhas, `jose` / `jsonwebtoken` para assinatura de JWTs.
+- **Observabilidade**: Winston/Pino + Sentry SDK integrado no Next.js (Edge e Node runtime).
+
+---
+
+## Estratégia de Testes
+
+Para garantir a qualidade, resiliência sanitária e segurança da plataforma Mesa Justa, adota-se a Pirâmide de Testes automatizados cobrindo todas as camadas da aplicação Next.js e do wrapper Electron.
+
+```mermaid
+graph TD
+    A["E2E Tests (Playwright/Cypress)"] --> B["Integration & Contract Tests (Pact/Prisma)"]
+    B --> C["Unit Tests (Jest/React Testing Library)"]
+    style A fill:#ffcc80,stroke:#f57c00
+    style B fill:#ffe082,stroke:#ffb300
+    style C fill:#c8e6c9,stroke:#388e3c
+```
+
+### 1. Testes Unitários
+
+- **Frontend (UI Components & Hooks)**: 
+  - Foco na validação visual de componentes isolados (ex: formulário de cadastro de doação, listagem de rankings, sidebar).
+  - Framework: Jest e `@testing-library/react`.
+  - Escopo: Validar que os campos de input de formulário reagem a validações locais (ex: bloquear data de expiração retroativa).
+- **Backend/Helpers (Regras de Negócio)**:
+  - Foco nas funções de utilidade pura (cálculo de coordenadas Haversine, conversão de peso em Moedas Verdes, formatação de dados).
+  - Framework: Vitest / Jest.
+
+### 2. Testes de Contrato
+
+- **Objetivo**: Garantir que alterações nas rotas de API do Next.js (`/app/api/...`) não quebrem a comunicação com a interface cliente em execução nos desktops do Electron ou navegadores mobile.
+- **Framework**: Pact.io.
+- **Fluxo**:
+  - O consumidor (Frontend React/Electron) define o contrato (payloads e respostas esperados para buscar doações e realizar reservas).
+  - O provedor (Next.js Route Handlers) valida que suas respostas reais respeitam o contrato acordado no pipeline de CI/CD.
+
+### 3. Testes de Integração
+
+- **API Route Handlers**:
+  - Validação do fluxo completo de requisições HTTP sem renderização visual.
+  - Framework: Vitest + Prisma Client rodando contra uma instância local temporária de PostgreSQL/PostGIS (via Docker Compose no CI/CD).
+  - Escopo: Enviar um `POST /api/v1/reservations` válido, confirmar que o status da doação mudou para `Reservada` no banco de dados e que uma entrada foi criada no log de auditoria de segurança.
+- **Persistência de Cache**:
+  - Testar o comportamento do cache de sessão e dados temporários no LocalStorage e no Redis (testes de concorrência de reservas simultâneas).
+
+### 4. Testes End-to-End (E2E)
+
+- **Objetivo**: Simular a jornada real dos usuários do sistema, cobrindo o fluxo do início ao fim (cadastro de usuário, login, cadastro de alimento, visualização de mapa, reserva, confirmação de retirada e pontuação).
+- **Framework**: Playwright (suporta testes multi-browser e simulação de tamanhos de tela mobile e desktop).
+- **Ambiente**: Executado contra um ambiente de homologação (Staging) isolado que é reiniciado a cada ciclo de pipeline.
+- **Métricas de Aceitação**: 100% dos fluxos principais descritos nas Histórias de Usuário devem passar com sucesso antes de qualquer release.
+
+### 5. Testes de Regressão Visual
+
+- **Objetivo**: Garantir que as atualizações de CSS puro (Vanilla CSS) não quebrem a interface com o usuário em diferentes resoluções.
+- **Framework**: Playwright Visual Comparisons.
+- **Metodologia**: Captura de tela automatizada e comparação de pixel por pixel contra imagens "baseline" homologadas do layout mobile e desktop.
 
 ---
 
@@ -93,8 +162,8 @@ graph TD
 
 ### Controle de Acesso e Autorização
 
-- **Controle de Acesso Baseado em Papéis (RBAC)**: O sistema de autorização interceptará as rotas de API por meio de middlewares que checam o escopo (`role`) contido na assinatura do JWT.
-- **Segurança no Nível da Linha (Row-Level Security - RLS)**: Em consultas a recursos de doação e auditoria, o backend deve injetar o ID do usuário autenticado no filtro da query SQL para garantir que um estabelecimento não consiga alterar ou visualizar detalhes de doações de outros, e que uma ONG acesse apenas as suas próprias reservas.
+- **Controle de Acesso Baseado em Papéis (RBAC)**: O sistema de autorização interceptará as rotas de API por meio do Next.js Middleware (`middleware.ts`) que checa o escopo (`role`) contido na assinatura do JWT.
+- **Segurança no Nível da Linha (Row-Level Security - RLS)**: Em consultas a recursos de doação e auditoria, o Next.js Server Side deve injetar o ID do usuário autenticado no filtro da query SQL para garantir que um estabelecimento não consiga alterar ou visualizar detalhes de doações de outros, e que uma ONG acesse apenas as suas próprias reservas.
 
 ### Segurança de Dados e Validação
 
@@ -110,42 +179,39 @@ graph TD
 ### Segurança da Infraestrutura e Configuração
 
 - **Variáveis de Ambiente**: Credenciais de banco de dados, chaves de assinatura JWT e chaves de APIs parceiras nunca devem ser mantidas em código fonte. Devem ser injetadas em tempo de execução via variáveis de ambiente configuradas em serviços de gerenciamento de segredos (ex: AWS Secrets Manager ou variáveis seguras do repositório no CI/CD).
-- **Ambiente Isolado (VPC)**: O banco de dados PostgreSQL e o cache Redis devem ser implantados em sub-redes privadas dentro de uma VPC, inacessíveis diretamente pela internet pública, sendo acessados unicamente pela API Backend por meio de regras estritas de Security Group.
+- **Ambiente Isolado (VPC)**: O banco de dados PostgreSQL e o cache Redis devem ser implantados em sub-redes privadas dentro de uma VPC, inacessíveis diretamente pela internet pública, sendo acessados unicamente pelos Serverless Route Handlers/API do Next.js por meio de regras estritas de Security Group.
 
 ### Segurança no Desenvolvimento e Operação (DevSecOps)
 
 - **Análise Estática de Vulnerabilidades**: Integração de ferramentas como Snyk ou npm audit nas esteiras de CI/CD para detectar pacotes NodeJS com vulnerabilidades conhecidas antes de cada build.
 - **Varredura de Segredos**: Utilização de ferramentas como `git-secrets` para prevenir que chaves de API sejam commitadas acidentalmente no repositório.
+- **Automação de Testes de Segurança**: Execução automatizada de toda a gama de testes (unitários, contrato, integração e E2E) no pipeline do GitHub Actions para garantir que nenhuma alteração introduza regressões de lógica ou acessos indevidos.
 
 ---
 
 ## APIs
 
-O sistema expõe uma API RESTful corporativa documentada sob a especificação OpenAPI (Swagger).
+O sistema expõe uma API RESTful corporativa implementada por meio de **Next.js API Route Handlers** (mapeados sob a estrutura de diretórios `/app/api/...`) e Server Actions.
 
 ### Diretrizes Gerais:
-- **Endpoint Principal**: `/api/v1`
-- **Versionamento**: Realizado diretamente no caminho da URL para mitigar quebras de compatibilidade com clientes de desktop legados do Electron.
-- **Padrão de Nomenclatura**: Recursos expressos em substantivos no plural em inglês (ex: `/donations`, `/users`, `/reservations`), com uso apropriado dos métodos HTTP:
-  - `GET`: Recuperar informações.
-  - `POST`: Criar novos recursos.
-  - `PUT`/`PATCH`: Atualizar recursos existentes.
-  - `DELETE`: Remover logicamente recursos (soft delete).
+- **Endpoint Principal**: `/api/v1` (versionamento mantido no caminho físico da rota para suportar clientes desktop Electron).
+- **Padrão de Nomenclatura**: RESTful clássico utilizando substantivos no plural em inglês (ex: `/api/v1/donations`).
+- **Autenticação**: Via cabeçalho `Authorization: Bearer <JWT>` ou Cookies HttpOnly validados pelo Next.js Middleware.
 
 ### Endpoints Principais (MVP)
 
 #### Públicos (Sem autenticação):
 - `POST /api/v1/auth/register` - Cadastro de novos estabelecimentos ou ONGs.
-- `POST /api/v1/auth/login` - Autenticação e emissão de JWT.
+- `POST /api/v1/auth/login` - Autenticação e emissão de JWT / Cookie de Sessão.
 
-#### Protegidos (Requer cabeçalho `Authorization: Bearer <JWT>`):
-- `GET /api/v1/donations` - Lista doações ativas. Filtros: `category`, `state`, `city`, `maxDistance` (calculado via coordenadas).
+#### Protegidos (Requer autenticação ativa):
+- `GET /api/v1/donations` - Lista doações ativas filtradas e ordenadas por geolocalização.
 - `POST /api/v1/donations` - Cadastro de lote de alimentos (Apenas Perfil Doador).
-- `PATCH /api/v1/donations/:id/status` - Atualização de status da doação (Disponível, Reservada, Retirada, Cancelada, Expirada).
-- `POST /api/v1/reservations` - Realiza a reserva de uma doação e gera o Token de Retirada (Apenas Perfil ONG).
-- `POST /api/v1/reservations/confirm` - Confirmação da retirada física validando o Token de Retirada (Perfis Doador e ONG).
-- `GET /api/v1/admin/dashboard` - Estatísticas macro e histórico de logs de auditoria (Apenas Perfil Administrador).
-- `GET /api/v1/gamification/ranking` - Exibe lista de classificação dos doadores baseados em Moedas Verdes acumuladas.
+- `PATCH /api/v1/donations/:id/status` - Transição de status da doação (Disponível, Reservada, Retirada, Cancelada, Expirada).
+- `POST /api/v1/reservations` - Realiza a reserva de um lote e gera o Token de Retirada (Apenas Perfil ONG).
+- `POST /api/v1/reservations/confirm` - Confirmação da retirada validando o Token (Doador/ONG).
+- `GET /api/v1/admin/dashboard` - KPIs consolidados de impacto e listagem do log de auditoria.
+- `GET /api/v1/gamification/ranking` - Classificação dos doadores baseados em Moedas Verdes.
 
 ---
 
