@@ -14,23 +14,23 @@ O sistema adota um padrão arquitetural baseado em **Monolito Modular** para a A
 
 ```mermaid
 graph TD
-    subgraph Cliente (Frontend)
-        A[Electron App - Desktop Shell] -->|Carrega localmente| B[Vite + React SPA]
-        C[Navegador Web / Mobile] -->|Acessa via HTTPS| B
+    subgraph "Cliente (Frontend)"
+        A["Electron App - Desktop Shell"] -->|Carrega localmente| B["Vite + React SPA"]
+        C["Navegador Web / Mobile"] -->|Acessa via HTTPS| B
     end
 
-    subgraph API Gateway / Servidor (Backend)
-        B -->|Chamadas HTTPS REST| D[API Node.js + Express/NestJS]
+    subgraph "API Gateway / Servidor (Backend)"
+        B -->|Chamadas HTTPS REST| D["API Node.js + Express/NestJS"]
     end
 
-    subgraph Camada de Dados
-        D -->|ORM Prisma| E[(PostgreSQL + PostGIS)]
-        D -->|Cache/Filas| F[(Redis)]
+    subgraph "Camada de Dados"
+        D -->|ORM Prisma| E[("PostgreSQL + PostGIS")]
+        D -->|Cache/Filas| F[("Redis")]
     end
 
-    subgraph Serviços Externos
-        D -->|Geocodificação| G[OpenStreetMap / Nominatim API]
-        D -->|E-mail / Push| H[Serviço Notificações]
+    subgraph "Serviços Externos"
+        D -->|Geocodificação| G["OpenStreetMap / Nominatim API"]
+        D -->|E-mail / Push| H["Serviço Notificações"]
     end
 ```
 
