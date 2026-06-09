@@ -137,7 +137,59 @@ Esta seção define as telas (interfaces gráficas), componentes de interface e 
 
 ## Fluxo de Navegação
 
-O diagrama abaixo representa a jornada dos usuários a partir da tela de autenticação, dividida pelas permissões de perfil (RBAC):
+O fluxo de navegação do Mesa Justa é organizado de forma a garantir jornadas eficientes e com o menor número possível de cliques para as três personas (Doador, ONG e Administrador). Abaixo estão detalhados os caminhos de navegação passo a passo, além do mapeamento visual do sistema.
+
+### 1. Fluxo do Estabelecimento Doador (Carlos Oliveira)
+
+1.  **Entrada e Login**: O usuário acessa a tela de autenticação (`INT-01`), insere as credenciais e entra no sistema.
+2.  **Visualização do Painel**: É direcionado para o Dashboard do Doador (`INT-02`), onde visualiza seus cartões de impacto (kg doados, Moedas Verdes) e o ranking de engajamento.
+3.  **Fluxo de Criação de Doação**:
+    - Carlos clica no botão **"+ Nova Doação"** no Dashboard (`INT-02`).
+    - O sistema abre o Modal de Cadastro (`INT-03`) em sobreposição.
+    - Carlos preenche os dados do alimento, categoria, peso e validade, e clica em **"Salvar e Disponibilizar"**.
+    - O modal fecha, e o novo lote de doações aparece na tabela com status **"Disponível"**.
+4.  **Fluxo de Confirmação de Retirada**:
+    - Quando uma ONG reserva a doação, o status muda automaticamente para **"Reservada"** e o nome da ONG reservante é exibido.
+    - Quando o motorista da ONG chega ao estabelecimento, Carlos clica no botão **"Confirmar Entrega"** ao lado da doação.
+    - Um popup é exibido solicitando o **Token de Retirada** (código de 6 caracteres fornecido pela ONG).
+    - Carlos insere o token e confirma.
+    - O status do lote atualiza para **"Retirada"**, as Moedas Verdes de Carlos são creditadas e a tabela é atualizada.
+
+---
+
+### 2. Fluxo da ONG (Ana Silva)
+
+1.  **Entrada e Login**: Ana acessa a tela de autenticação (`INT-01`), autentica-se e é direcionada ao Dashboard da ONG (`INT-04`).
+2.  **Busca e Filtros**:
+    - No Dashboard (`INT-04`), Ana utiliza os filtros de raio de distância e categorias de alimentos na barra de ferramentas.
+    - Clica em **"Aplicar Filtros"**, o que atualiza os pins no Mapa Interativo (`INT-05`) e a lista de cartões de doações laterais.
+3.  **Fluxo de Reserva de Alimento**:
+    - Ana clica em um pin de estabelecimento doador no Mapa (`INT-05`).
+    - Uma janela popup abre exibindo os detalhes do lote (alimento, peso, validade).
+    - Ana clica no botão **"Reservar Lote"** no popup.
+    - O sistema solicita confirmação. Ao confirmar, o lote muda de status para **"Reservada"** e Ana é redirecionada para a tela de **Reservas Ativas** (`INT-06`).
+4.  **Fluxo de Retirada**:
+    - Na tela de **Reservas Ativas** (`INT-06`), Ana visualiza o **Token de Retirada** gerado (`MJ-XXXX`).
+    - Clica em **"Ver Rota de Retirada"** para abrir a rota no Google Maps e se desloca até o estabelecimento doador.
+    - Apresenta o código do token ao responsável pela doação para que ele valide a retirada.
+    - Uma vez validada pelo doador, a doação some de sua lista de reservas ativas e passa a constar no seu histórico de coletas finalizadas.
+
+---
+
+### 3. Fluxo do Administrador (Juliana Souza)
+
+1.  **Entrada e Login**: Juliana acessa a tela de autenticação (`INT-01`), autentica-se como administrador e entra no Dashboard Administrativo (`INT-07`).
+2.  **Monitoramento e Auditoria**:
+    - Juliana visualiza os painéis gerais de impacto (toneladas salvas, famílias atendidas, emissão de CO2 evitada).
+    - Acessa a seção de log de auditoria no mesmo painel para inspecionar registros históricos de criação, reserva e retirada de alimentos.
+    - Utiliza o filtro de data para auditar operações críticas de um período específico.
+3.  **Geração de Relatórios**:
+    - Juliana clica no botão **"Exportar Relatório ESG"**.
+    - O sistema gera e inicia o download do relatório analítico em formato PDF.
+
+---
+
+### Mapeamento Visual do Fluxo
 
 ```mermaid
 graph TD
@@ -173,6 +225,7 @@ graph TD
     Admin_Dash -->|Exportar Relatórios| Admin_Dash
     Admin_Dash -->|Filtro de Auditoria| Admin_Dash
 ```
+
 
 ---
 
