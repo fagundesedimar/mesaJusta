@@ -103,9 +103,12 @@ npm run build:electron
 
 ## 🚦 5. Governança e Autonomia no Terminal
 
--   **Aprovação Explicita**: O agente **nunca** deve executar comandos destrutivos (como remoções em massa, `git clean` ou formatações de banco) sem explicar previamente o impacto e pedir confirmação explícita no chat.
--   **Uso de Ferramentas de Comando**: Sempre propose o comando em uma linha única, configurando corretamente o diretório de trabalho (`Cwd`) para evitar erros de execução.
--   **Segurança de Segredos**: Nunca crie ou modifique arquivos `.env` contendo chaves de API reais que sejam enviadas ao repositório Git. Use sempre o `.env.example` para commits.
+-   **Autonomia para Leitura e Escrita de Arquivos**: O agente possui autonomia completa para criar, ler, editar e remover arquivos locais de documentação (na pasta `docs/`) e arquivos de código-fonte (nas pastas `src/`, `electron/` e `prisma/`), bem como aplicar correções estáticas diretas ou de sintaxe, sem necessidade de solicitar aprovação prévia para cada operação individual de arquivo.
+-   **Aprovação para Comandos do Sistema**:
+    *   *Comandos Gerais*: Comandos de compilação (`npm run build`), testes locais (`npm run test:*`) ou visualização (`npx prisma studio`) podem ser propostos de forma direta.
+    *   *Comandos Destrutivos*: É obrigatório pedir confirmação explícita no chat antes de rodar comandos destrutivos (como exclusão de pastas críticas, `git clean` ou formatações/resets de banco de dados).
+-   **Uso de Ferramentas de Comando**: Sempre proponha comandos estruturados em linha única e configure o diretório de trabalho (`Cwd`) de maneira adequada para evitar erros de execução.
+-   **Segurança de Segredos**: Nunca comite arquivos `.env` contendo chaves reais. Sempre utilize o `.env.example` para documentar novas variáveis que devam ir para o repositório remoto.
 
 ---
 
@@ -128,4 +131,5 @@ Ao final de cada ciclo de alteração de código ou de documentação, o agente 
 2.  **Sugerir Atualização de Regras**: Caso identifique um padrão repetitivo de erro, uma limitação do compilador, ou uma regra de estilo não mapeada, deve propor e inserir uma nova diretriz de desenvolvimento neste arquivo (`AGENTS.md`) sob a seção **"Histórico de Evolução de Regras"** abaixo.
 
 ### Histórico de Evolução de Regras:
+-   *(V1.1 - 15/06/2026)*: Aumento de autonomia do agente para operações locais de leitura, escrita e edição de arquivos (como correção de sintaxe e documentação), mantendo regras restritas para comandos destrutivos.
 -   *(V1.0 - 15/06/2026)*: Criação inicial das diretrizes de comportamento, arquitetura Next.js + Electron, governança de terminal e testes.
