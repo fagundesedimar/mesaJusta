@@ -1,17 +1,60 @@
-# OpenSpec Local Configuration
-# This file configures the behavior of OpenSpec within this repository.
+# OpenSpec Local Configuration - Mesa Justa: Circuito Solidário
 
-# The active workflow schema (default is core)
+# Core OpenSpec Configuration
 schema: core
-
-# Configuration for changes
 changes:
   dir: openspec/changes
-  # Template used to create new changes
   template: default
-
-# Configuration for specifications
 specs:
   dir: openspec/specs
-  # Keep specs synchronized automatically
   auto_sync: true
+
+# Project Quality & Architecture Rules
+quality:
+  styling:
+    frameworks: vanilla-css-only # Estilização estrita em CSS puro
+    variables: src/index.css     # Localização das variáveis do Design System
+  typescript:
+    strict: true
+    no_any: true                 # Proibido o uso de 'any' em payloads, APIs e componentes
+  security:
+    audit_logs:
+      required: true             # Logs de auditoria obrigatórios para todas as transições de status
+      schema:
+        fields:
+          - donation_id
+          - ong_id
+          - donor_id
+          - timestamp
+          - executor_id
+    jwt:
+      storage: HttpOnly Cookies
+
+# Test Suite Configurations
+# Comandos homologados no AGENTS.md e spec_tech.md
+testing:
+  unit:
+    command: npm run test:unit
+    framework: Jest + React Testing Library + Vitest
+  contract:
+    command: npm run test:contract
+    framework: Pact.io
+  integration:
+    command: npm run test:integration
+    framework: Vitest + Local PostgreSQL (Docker Compose)
+  e2e:
+    command: npm run test:e2e
+    framework: Playwright
+  visual:
+    framework: Playwright Visual Comparisons
+
+# Domain Logic & ESG Formulas
+esg_formulas:
+  moedas_verdes:
+    base_multiplier: 10          # 1 kg = 10 Moedas Verdes
+    bonuses:
+      Proteínas: 1.5             # Multiplicador 1.5x
+      Refeições Prontas: 1.5     # Multiplicador 1.5x
+  impact:
+    meals_per_kg: 2              # 1 kg = 2 refeições complementadas
+    co2_saved_per_kg: 2.5        # 1 kg de alimento poupado do aterro = 2.5 kg CO2eq
