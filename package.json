@@ -1,0 +1,32 @@
+{
+  "name": "mesajusta",
+  "version": "1.0.0",
+  "description": "[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)\r [![Next.js](https://img.shields.io/badge/Next.js-14--App%20Router-black?style=flat&logo=next.js)](https://nextjs.org/)\r [![Electron](https://img.shields.io/badge/Electron-Desktop%20Wrapper-blue?style=flat&logo=electron)](https://www.electronjs.org/)\r [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-PostGIS-blue?style=flat&logo=postgresql)](https://www.postgresql.org/)",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fagundesedimar/mesaJusta.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fagundesedimar/mesaJusta/issues"
+  },
+  "homepage": "https://github.com/fagundesedimar/mesaJusta#readme",
+  "dependencies": {
+    "@types/node": "^26.0.0",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "next": "^14.2.35",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "^6.0.3"
+  }
+}
