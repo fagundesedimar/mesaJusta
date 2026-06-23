@@ -1,0 +1,17 @@
+# OpenSpec Local Configuration
+# This file configures the behavior of OpenSpec within this repository.
+
+# The active workflow schema (default is core)
+schema: core
+
+# Configuration for changes
+changes:
+  dir: openspec/changes
+  # Template used to create new changes
+  template: default
+
+# Configuration for specifications
+specs:
+  dir: openspec/specs
+  # Keep specs synchronized automatically
+  auto_sync: true
