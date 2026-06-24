@@ -29,6 +29,8 @@ model User {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
+  latitude   Float?
+  longitude  Float?
   profile        Profile?
   greenCoins    Int        @default(0)
 
@@ -58,6 +60,8 @@ model Donation {
   notes        String?
   moedasVerdes Decimal?
   token        String?
+  latitude     Float?
+  longitude    Float?
   donorId      String
   ongId        String?
   createdAt    DateTime       @default(now())
@@ -69,6 +73,7 @@ model Donation {
   @@index([donorId, status])
   @@index([expiresAt])
   @@index([status, createdAt])
+  @@index([latitude, longitude])
 }
 
 model AuditLog {
