@@ -59,13 +59,16 @@ model Donation {
   status       DonationStatus @default(AVAILABLE)
   notes        String?
   moedasVerdes Decimal?
-  token        String?
-  latitude     Float?
-  longitude    Float?
-  donorId      String
-  ongId        String?
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
+  token             String?
+  reservationToken  String?    @unique
+  reservedAt        DateTime?
+  reservedByOngId   String?
+  latitude          Float?
+  longitude         Float?
+  donorId           String
+  ongId             String?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
 
   donor User  @relation("DonorDonations", fields: [donorId], references: [id])
   ong   User? @relation("OngDonations", fields: [ongId], references: [id])
@@ -74,6 +77,7 @@ model Donation {
   @@index([expiresAt])
   @@index([status, createdAt])
   @@index([latitude, longitude])
+  @@index([reservedByOngId])
 }
 
 model AuditLog {

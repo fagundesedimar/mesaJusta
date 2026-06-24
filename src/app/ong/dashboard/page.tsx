@@ -57,8 +57,22 @@ export default function OngDashboardPage() {
     ? donations.filter((d) => d.category === selectedCategory)
     : donations
 
-  const handleReserve = useCallback((donationId: string) => {
-    window.location.href = `/donations/${donationId}/reserve`
+  const handleReserve = useCallback(async (donationId: string) => {
+    try {
+      const res = await fetch('/api/v1/reservations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ donationId }),
+      })
+      if (res.ok) {
+        window.location.href = '/ong/reservations'
+      } else {
+        const data = await res.json()
+        alert(data.error ?? 'Erro ao reservar lote.')
+      }
+    } catch {
+      alert('Erro de conexão ao reservar lote.')
+    }
   }, [])
 
   return (
