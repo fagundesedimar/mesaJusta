@@ -2,13 +2,12 @@
   "name": "mesajusta",
   "version": "1.0.0",
   "description": "[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)\r [![Next.js](https://img.shields.io/badge/Next.js-14--App%20Router-black?style=flat&logo=next.js)](https://nextjs.org/)\r [![Electron](https://img.shields.io/badge/Electron-Desktop%20Wrapper-blue?style=flat&logo=electron)](https://www.electronjs.org/)\r [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-PostGIS-blue?style=flat&logo=postgresql)](https://www.postgresql.org/)",
-  "main": "index.js",
-  "directories": {
-    "doc": "docs"
-  },
+  "main": "electron/main.js",
   "scripts": {
     "dev": "next dev",
+    "dev:electron": "cross-env NODE_ENV=development concurrently \"next dev\" \"wait-on http://localhost:3000 && electron .\"",
     "build": "next build",
+    "build:electron": "cross-env ELECTRON_BUILD=true npm run build && electron-builder",
     "lint": "next lint",
     "test": "echo \"Error: no test specified\" && exit 1",
     "test:unit": "vitest run src/__tests__/unit/",
@@ -45,6 +44,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@types/bcryptjs": "^2.4.6",
@@ -52,10 +52,16 @@
     "@types/pdfkit": "^0.17.6",
     "@types/pg": "^8.20.0",
     "@vitejs/plugin-react": "^6.0.3",
+    "concurrently": "^10.0.3",
+    "cross-env": "^10.1.0",
     "dotenv": "^17.4.2",
+    "electron": "^42.5.0",
+    "electron-builder": "^26.15.3",
     "eslint": "^8.57.1",
     "eslint-config-next": "^14.2.35",
     "jsdom": "^29.1.1",
-    "vitest": "^4.1.9"
+    "playwright": "^1.61.1",
+    "vitest": "^4.1.9",
+    "wait-on": "^9.0.10"
   }
 }

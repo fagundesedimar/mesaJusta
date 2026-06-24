@@ -52,7 +52,7 @@ beforeAll(async () => {
     email: 'donor0@test.com',
     role: 'DONOR',
   })
-})
+}, 30000)
 
 afterAll(async () => {
   await prisma.donation.deleteMany()

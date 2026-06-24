@@ -1,0 +1,24 @@
+appId: br.com.mesajusta.app
+productName: Mesa Justa
+directories:
+  buildResources: electron/assets
+  output: dist
+files:
+  - "out/**"
+  - "electron/**"
+  - "!node_modules/**/*"
+  - "!.git/**"
+  - "!.env*"
+  - "!src/**"
+  - "!prisma/**"
+  - "!public/**"
+  - "!docs/**"
+  - "!openspec/**"
+  - "!e2e/**"
+win:
+  target: nsis
+nsis:
+  oneClick: false
+  perMachine: false
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
