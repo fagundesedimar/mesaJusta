@@ -89,7 +89,7 @@ describe('GET /api/v1/donations', () => {
     expect(res.status).toBe(200)
     const data = await res.json()
 
-    const expired = data.find((d: any) => d.name === 'Vencido')
+    const expired = data.donations.find((d: any) => d.name === 'Vencido')
     expect(expired.status).toBe('EXPIRED')
   })
 
@@ -98,10 +98,10 @@ describe('GET /api/v1/donations', () => {
       headers: { Cookie: `auth_token=${donorToken}` },
     })
     const data = await res.json()
-    data.forEach((d: any) => {
+    data.donations.forEach((d: any) => {
       expect(d.donorId).toBe(donorId)
     })
-    expect(data.some((d: any) => d.name === 'Outro')).toBe(false)
+    expect(data.donations.some((d: any) => d.name === 'Outro')).toBe(false)
   })
 
   it('returns donations ordered by createdAt desc', async () => {
@@ -109,8 +109,8 @@ describe('GET /api/v1/donations', () => {
       headers: { Cookie: `auth_token=${donorToken}` },
     })
     const data = await res.json()
-    for (let i = 1; i < data.length; i++) {
-      expect(new Date(data[i].createdAt) <= new Date(data[i - 1].createdAt)).toBe(true)
+    for (let i = 1; i < data.donations.length; i++) {
+      expect(new Date(data.donations[i].createdAt) <= new Date(data.donations[i - 1].createdAt)).toBe(true)
     }
   })
 })

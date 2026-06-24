@@ -119,7 +119,7 @@ describe('POST /api/v1/donations', () => {
     expect(res.status).toBe(403)
   })
 
-  it('returns 403 without token', async () => {
+  it('returns 401 without token', async () => {
     const res = await fetch(`${API_BASE}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -130,6 +130,6 @@ describe('POST /api/v1/donations', () => {
         expiresAt: '2030-12-31',
       }),
     })
-    expect(res.status).toBe(403)
+    expect(res.status).toBe(401)
   })
 })

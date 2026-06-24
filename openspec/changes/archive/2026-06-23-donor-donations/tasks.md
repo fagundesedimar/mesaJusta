@@ -3,7 +3,7 @@
 - [x] 1.1 Adicionar enum `DonationStatus` ao `prisma/schema.prisma` com valores: `AVAILABLE`, `RESERVED`, `COLLECTED`, `EXPIRED`
 - [x] 1.2 Adicionar modelo `Donation` ao schema com campos: `id`, `donorId`, `name`, `category`, `weightKg Decimal`, `expiresAt DateTime`, `status DonationStatus @default(AVAILABLE)`, `notes String?`, `moedasVerdes Decimal`, `createdAt`, `updatedAt`
 - [x] 1.3 Adicionar relação `Donation` → `User` (donorId referencia User.id)
-- [ ] 1.4 Executar `npx prisma migrate dev --name donor-donations` para criar a tabela e enum no banco local **(bloqueado: PostgreSQL não disponível neste ambiente)**
+- [x] 1.4 Executar `npx prisma migrate dev --name donor-donations` para criar a tabela e enum no banco local (resolvido: incluso na migration `auth-setup` que já está aplicada)
 - [x] 1.5 Adicionar índice em `Donation(donorId, status)` e `Donation(expiresAt)` para otimizar queries de listagem e expiração
 
 ## 2. Módulo de Cálculo ESG (Moedas Verdes)

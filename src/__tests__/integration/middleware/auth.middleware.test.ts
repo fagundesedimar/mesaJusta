@@ -6,7 +6,7 @@ const API_BASE = 'http://localhost:3000'
 describe('Middleware auth protection', () => {
   it('redirects to /login for protected route without token', async () => {
     const res = await fetch(`${API_BASE}/dashboard`, { redirect: 'manual' })
-    expect(res.status).toBe(302)
+    expect(res.status).toBe(307)
     expect(res.headers.get('location')).toBe('/login')
   })
 
