@@ -25,18 +25,18 @@ const DEFAULT_ZOOM = 13
 
 const ongIcon = L.divIcon({
   className: 'map-pin map-pin--ong',
-  html: '<span class="map-pin__icon">🏠</span>',
-  iconSize: [32, 32],
-  iconAnchor: [16, 32],
-  popupAnchor: [0, -32],
+  html: '<div class="map-pin__circle map-pin__circle--ong"></div>',
+  iconSize: [24, 24],
+  iconAnchor: [12, 12],
+  popupAnchor: [0, -12],
 })
 
 const donationIcon = L.divIcon({
   className: 'map-pin map-pin--donation',
-  html: '<span class="map-pin__icon">📍</span>',
-  iconSize: [32, 32],
-  iconAnchor: [16, 32],
-  popupAnchor: [0, -32],
+  html: '<div class="map-pin__circle map-pin__circle--donation"></div>',
+  iconSize: [20, 20],
+  iconAnchor: [10, 10],
+  popupAnchor: [0, -10],
 })
 
 export default function DonationMap({ centerLat, centerLng, donations, onReserve }: Props) {

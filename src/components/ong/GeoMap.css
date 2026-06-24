@@ -115,8 +115,28 @@
 .map-pin {
   background: none !important;
   border: none !important;
-  font-size: 1.5rem;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.map-pin__circle {
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+
+.map-pin__circle--ong {
+  width: 24px;
+  height: 24px;
+  background: #22c55e;
+  border: 3px solid #fff;
+}
+
+.map-pin__circle--donation {
+  width: 20px;
+  height: 20px;
+  background: #f97316;
+  border: 2px solid #fff;
 }
 
 .map-popup {

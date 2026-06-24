@@ -34,6 +34,18 @@ export async function GET(request: NextRequest) {
         reservationToken: true,
         reservedAt: true,
         expiresAt: true,
+        donor: {
+          select: {
+            email: true,
+            profile: {
+              select: {
+                name: true,
+                zipCode: true,
+                state: true,
+              },
+            },
+          },
+        },
       },
       orderBy: { reservedAt: 'desc' },
     })

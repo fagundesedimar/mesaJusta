@@ -93,6 +93,16 @@
   font-family: 'Courier New', Courier, monospace;
 }
 
+.reservation-card__address {
+  font-size: 0.85rem;
+  color: var(--color-text, #1a1a2e);
+  background: var(--color-bg-muted, #f9fafb);
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+}
+
 .reservation-card__time {
   font-size: 0.8rem;
   color: var(--color-text-muted, #6b7280);
@@ -152,6 +162,16 @@
 
 .reservation-countdown--danger .reservation-countdown__bar {
   background: #ef4444;
+}
+
+.reservation-countdown--danger .reservation-countdown__text {
+  animation: reservation-blink 1s step-end infinite;
+  font-weight: 700;
+}
+
+@keyframes reservation-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
 }
 
 .reservation-countdown__text {

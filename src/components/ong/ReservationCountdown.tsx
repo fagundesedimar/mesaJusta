@@ -29,12 +29,13 @@ export default function ReservationCountdown({ expiresAt }: Props) {
   const remainingDays = totalDays > 0 ? Math.ceil(remaining / (1000 * 60 * 60 * 24)) : 0
   const hours = Math.floor((remaining / (1000 * 60 * 60)) % 24)
   const minutes = Math.floor((remaining / (1000 * 60)) % 60)
+  const remainingHours = remaining / (1000 * 60 * 60)
   const percent = total > 0 ? (remaining / total) * 100 : 0
 
   const colorClass =
-    percent > 50
+    remainingHours > 2
       ? 'reservation-countdown--ok'
-      : percent > 20
+      : remainingHours > 0.5
         ? 'reservation-countdown--warn'
         : 'reservation-countdown--danger'
 

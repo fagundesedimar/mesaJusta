@@ -3,6 +3,15 @@
 import { useState, useCallback } from 'react'
 import ReservationCountdown from './ReservationCountdown'
 
+interface DonorInfo {
+  email: string
+  profile: {
+    name: string
+    zipCode: string
+    state: string
+  } | null
+}
+
 interface Props {
   donationId: string
   name: string
@@ -11,6 +20,7 @@ interface Props {
   reservationToken: string
   reservedAt: string
   expiresAt: string
+  donor: DonorInfo | null
   onCancel: (donationId: string) => void
   onError: (message: string) => void
 }
@@ -23,6 +33,7 @@ export default function ReservationCard({
   reservationToken,
   reservedAt,
   expiresAt,
+  donor,
   onCancel,
   onError,
 }: Props) {
@@ -66,6 +77,14 @@ export default function ReservationCard({
         <span className="reservation-card__token-label">Token de Retirada:</span>
         <code className="reservation-card__token-code">{reservationToken}</code>
       </div>
+
+      {donor?.profile && (
+        <div className="reservation-card__address">
+          <strong>Doador:</strong> {donor.profile.name}<br />
+          <strong>CEP:</strong> {donor.profile.zipCode} &middot; {donor.profile.state}<br />
+          <strong>Contato:</strong> {donor.email}
+        </div>
+      )}
 
       <div className="reservation-card__time">
         Reservado em: {new Date(reservedAt).toLocaleString('pt-BR')}

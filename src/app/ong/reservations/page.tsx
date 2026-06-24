@@ -4,6 +4,15 @@ import { useState, useEffect, useCallback } from 'react'
 import ReservationCard from '@/components/ong/ReservationCard'
 import '@/components/ong/Reservations.css'
 
+interface DonorInfo {
+  email: string
+  profile: {
+    name: string
+    zipCode: string
+    state: string
+  } | null
+}
+
 interface Reservation {
   id: string
   name: string
@@ -12,6 +21,7 @@ interface Reservation {
   reservationToken: string
   reservedAt: string
   expiresAt: string
+  donor: DonorInfo | null
 }
 
 export default function OngReservationsPage() {
@@ -80,6 +90,7 @@ export default function OngReservationsPage() {
             reservationToken={r.reservationToken}
             reservedAt={r.reservedAt}
             expiresAt={r.expiresAt}
+            donor={r.donor}
             onCancel={handleCancel}
             onError={handleError}
           />

@@ -28,6 +28,23 @@ export default function OngDashboardPage() {
   const [selectedRadius, setSelectedRadius] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
 
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch('/api/v1/auth/me')
+        if (res.ok) {
+          const data = await res.json()
+          if (data.user?.latitude != null && data.user?.longitude != null) {
+            setOngLat(data.user.latitude)
+            setOngLng(data.user.longitude)
+          }
+        }
+      } catch {
+        // keep fallback coordinates
+      }
+    })()
+  }, [])
+
   const fetchDonations = useCallback(async () => {
     setLoading(true)
     try {
