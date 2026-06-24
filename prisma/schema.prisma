@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  DONOR
+  ONG
+  ADMIN
+}
+
+model User {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  passwordHash String
+  role         Role
+  deletedAt    DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  profile Profile?
+}
+
+model Profile {
+  id          String @id @default(uuid())
+  userId      String @unique
+  name        String
+  document    String
+  zipCode     String
+  state       String
+  profileType String
+
+  user User @relation(fields: [userId], references: [id])
+}
