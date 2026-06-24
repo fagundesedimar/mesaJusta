@@ -1,7 +1,7 @@
 ## 1. Schema de Banco de Dados
 
 - [x] 1.1 Adicionar modelo `AuditLog` ao `prisma/schema.prisma` com campos: `id`, `donationId`, `ongId`, `donorId`, `executorId`, `timestamp DateTime @default(now())` — sem campo `updatedAt` e com `@@map("audit_logs")`
-- [ ] 1.2 Executar `npx prisma migrate dev --name collection-audit` para criar a tabela no banco local
+- [x] 1.2 Executar `npx prisma migrate dev --name collection-audit` para criar a tabela no banco local (já incluso na migration `auth-setup`)
 - [x] 1.3 Adicionar índice em `AuditLog(donationId)` e `AuditLog(timestamp)` no schema para otimizar queries do dashboard admin
 
 ## 2. Route Handler — Confirmação de Entrega
