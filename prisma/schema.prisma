@@ -47,16 +47,25 @@ model Profile {
 }
 
 model Donation {
-  id        String         @id @default(uuid())
-  status    DonationStatus @default(AVAILABLE)
-  token     String?
-  donorId   String
-  ongId     String?
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
+  id           String         @id @default(uuid())
+  name         String
+  category     String
+  weightKg     Decimal
+  expiresAt    DateTime
+  status       DonationStatus @default(AVAILABLE)
+  notes        String?
+  moedasVerdes Decimal?
+  token        String?
+  donorId      String
+  ongId        String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
 
   donor User  @relation("DonorDonations", fields: [donorId], references: [id])
   ong   User? @relation("OngDonations", fields: [ongId], references: [id])
+
+  @@index([donorId, status])
+  @@index([expiresAt])
 }
 
 model AuditLog {
