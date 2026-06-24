@@ -4,7 +4,7 @@
 - [x] 1.2 Adicionar o enum `Role` (`DONOR`, `ONG`, `ADMIN`) ao `prisma/schema.prisma`
 - [x] 1.3 Adicionar o modelo `User` ao schema com campos: `id`, `email`, `passwordHash`, `role`, `deletedAt`, `createdAt`, `updatedAt`
 - [x] 1.4 Adicionar o modelo `Profile` ao schema com campos: `id`, `userId`, `name`, `document`, `zipCode`, `state`, `profileType`
-- [ ] 1.5 Executar `npx prisma migrate dev --name auth-setup` para aplicar a migração no banco local
+- [x] 1.5 Executar `npx prisma migrate dev --name auth-setup` para aplicar a migração no banco local
 
 ## 2. Utilitários de Validação
 

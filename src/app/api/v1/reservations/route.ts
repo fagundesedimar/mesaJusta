@@ -21,18 +21,9 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Acesso negado.' }, { status: 403 })
     }
 
-    const { searchParams } = new URL(request.url)
-    const requestedOngId = searchParams.get('ongId')
-
-    const ongId = requestedOngId ?? payload.sub
-
-    if (payload.role !== 'ADMIN' && ongId !== payload.sub) {
-      return NextResponse.json({ error: 'Acesso negado.' }, { status: 403 })
-    }
-
     const reservations = await prisma.donation.findMany({
       where: {
-        reservedByOngId: ongId,
+        reservedByOngId: payload.sub,
         status: 'RESERVED',
       },
       select: {
@@ -86,11 +77,11 @@ export async function POST(request: NextRequest) {
     const { donationId } = parsed.data
     const now = new Date()
 
-    let reservationToken: string | null = null
+    let reservationToken: string | undefined
     let created = false
 
     for (let attempt = 0; attempt < 3; attempt++) {
-      reservationToken = generateReservationToken()
+      const token = generateReservationToken()
 
       const result = await prisma.$transaction(async (tx) => {
         const donation = await tx.donation.findUnique({
@@ -102,7 +93,7 @@ export async function POST(request: NextRequest) {
         }
 
         const existing = await tx.donation.findUnique({
-          where: { reservationToken },
+          where: { reservationToken: token },
         })
 
         if (existing) {
@@ -113,7 +104,7 @@ export async function POST(request: NextRequest) {
           where: { id: donationId },
           data: {
             status: 'RESERVED',
-            reservationToken,
+            reservationToken: token,
             reservedAt: now,
             reservedByOngId: payload.sub,
           },
@@ -130,16 +121,10 @@ export async function POST(request: NextRequest) {
       }
 
       if (!result.retry) {
+        reservationToken = token
         created = true
         break
       }
-    }
-
-    if (!created) {
-      return NextResponse.json(
-        { error: 'Erro interno ao gerar token de reserva.' },
-        { status: 500 }
-      )
     }
 
     const expiresAt = await prisma.donation.findUnique({

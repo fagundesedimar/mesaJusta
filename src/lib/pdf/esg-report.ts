@@ -36,7 +36,7 @@ export function generateESGReport(
     const col2 = 200
     const col3 = 350
 
-    doc.fontSize(14).text('Indicador', col1, undefined, { bold: true })
+    doc.fontSize(14).text('Indicador', col1)
     doc.text('Valor', col3)
     doc.moveDown(0.5)
 
@@ -59,7 +59,7 @@ export function generateESGReport(
     }
 
     doc.moveDown(2)
-    doc.fontSize(10).text('Gerado automaticamente pelo Mesa Justa — Circuito Solidário', { align: 'center', color: '#888' })
+    doc.fontSize(10).fillColor('#888').text('Gerado automaticamente pelo Mesa Justa — Circuito Solidário', { align: 'center' })
 
     doc.end()
   })

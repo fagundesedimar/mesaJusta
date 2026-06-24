@@ -44,7 +44,7 @@
 
 ## 9. Validação Final
 
-- [ ] 9.1 Executar `npm run lint` e corrigir todos os erros ESLint
-- [ ] 9.2 Executar `npm run test:unit` e garantir que os testes de cálculo ESG passam
+- [x] 9.1 Executar `npm run lint` e corrigir todos os erros ESLint — *0 erros*
+- [x] 9.2 Executar `npm run test:unit` e garantir que os testes de cálculo ESG passam — *59/59 pass*
 - [ ] 9.3 Executar `npm run test:integration` e verificar os três testes de integração do admin
 - [ ] 9.4 Executar `npm run test:e2e` e verificar o fluxo E2E do dashboard admin
