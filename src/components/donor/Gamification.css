@@ -1,8 +1,9 @@
 .gamification-card {
-  background: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 1.25rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
 }
 
 .green-coins-card {
@@ -10,41 +11,47 @@
   flex-direction: column;
   align-items: center;
   gap: 0.25rem;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border-color: #bbf7d0;
 }
 
 .green-coins-card__value {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #2e7d32;
+  color: var(--color-success);
 }
 
 .green-coins-card__label {
   font-size: 0.875rem;
-  color: #888;
+  color: var(--color-text-muted);
+  font-weight: 500;
 }
 
 .green-coins-card__badge {
   margin-top: 0.5rem;
-  padding: 0.25rem 0.75rem;
+  padding: 0.3rem 1rem;
   border-radius: 999px;
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .badge--bronze {
-  background: #d7ccc8;
-  color: #5d4037;
+  background: linear-gradient(135deg, #d7ccc8, #bcaaa4);
+  color: #4e342e;
 }
 
 .badge--silver {
-  background: #e0e0e0;
+  background: linear-gradient(135deg, #e0e0e0, #bdbdbd);
   color: #424242;
 }
 
 .badge--gold {
-  background: #fff8e1;
-  color: #f57f17;
+  background: linear-gradient(135deg, #fff8e1, #ffecb3);
+  color: #e65100;
+  border: 1px solid #ffb300;
 }
 
 .ranking-table {
@@ -54,10 +61,12 @@
 .ranking-table__title {
   margin: 0 0 1rem;
   font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-primary);
 }
 
 .ranking-table__empty {
-  color: #888;
+  color: var(--color-text-muted);
   font-size: 0.875rem;
 }
 
@@ -70,17 +79,24 @@
 .ranking-table__table td {
   text-align: left;
   padding: 0.75rem;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--color-border);
   font-size: 0.875rem;
 }
 
 .ranking-table__table th {
   font-weight: 600;
-  color: #555;
-  background: #f9f9f9;
+  color: var(--color-text-muted);
+  background: #fafafa;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+}
+
+.ranking-table__table tr:last-child td {
+  border-bottom: none;
 }
 
 .ranking-table__row--highlight {
-  background: #e8f5e9;
+  background: #f0fdf4;
   font-weight: 600;
 }

@@ -7,6 +7,8 @@
 .dashboard-admin h1 {
   margin-bottom: 1.5rem;
   font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-primary);
 }
 
 .kpi-cards {
@@ -17,14 +19,15 @@
 
 .kpi-card {
   flex: 1;
-  background: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 1.25rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+  box-shadow: var(--shadow-sm);
 }
 
 .kpi-card__icon {
@@ -35,13 +38,16 @@
 .kpi-card__value {
   font-size: 1.75rem;
   font-weight: 700;
-  color: #0070f3;
+  color: var(--color-primary);
 }
 
 .kpi-card__label {
-  font-size: 0.8rem;
-  color: #888;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
   margin-top: 0.25rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .filters {
@@ -52,26 +58,52 @@
   flex-wrap: wrap;
 }
 
+.filters label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
 .filters input[type="date"] {
   padding: 0.4rem 0.6rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
   font-size: 0.875rem;
+  font-family: var(--font-family);
+}
+
+.filters input[type="date"]:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(14, 58, 47, 0.1);
 }
 
 .btn-export {
-  padding: 0.5rem 1rem;
-  background: #28a745;
+  padding: 0.55rem 1.25rem;
+  background: var(--color-success);
   color: #fff;
   border: none;
-  border-radius: 4px;
-  font-size: 0.875rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
   cursor: pointer;
+  transition: background 0.15s;
   margin-left: auto;
+  font-family: var(--font-family);
 }
 
 .btn-export:hover {
-  background: #1e7e34;
+  background: var(--color-success-hover);
+}
+
+.audit-log-table-wrapper {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
 .audit-log-table {
@@ -82,24 +114,33 @@
 .audit-log-table th,
 .audit-log-table td {
   text-align: left;
-  padding: 0.6rem;
-  border-bottom: 1px solid #e0e0e0;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--color-border);
   font-size: 0.8rem;
 }
 
 .audit-log-table th {
   font-weight: 600;
-  color: #555;
-  background: #f9f9f9;
+  color: var(--color-text-muted);
+  background: #fafafa;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.5px;
+}
+
+.audit-log-table tr:last-child td {
+  border-bottom: none;
 }
 
 .pagination {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 1rem;
+  padding: 0.75rem 1rem;
   font-size: 0.8rem;
-  color: #555;
+  color: var(--color-text-muted);
+  background: #fafafa;
+  border-top: 1px solid var(--color-border);
 }
 
 .pagination-buttons {
@@ -108,12 +149,18 @@
 }
 
 .pagination-buttons button {
-  padding: 0.3rem 0.8rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
   background: #fff;
   cursor: pointer;
   font-size: 0.8rem;
+  font-family: var(--font-family);
+  transition: background 0.15s;
+}
+
+.pagination-buttons button:hover:not(:disabled) {
+  background: #f0f0f0;
 }
 
 .pagination-buttons button:disabled {

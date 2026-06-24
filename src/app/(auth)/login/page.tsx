@@ -41,6 +41,7 @@ export default function LoginPage() {
     <div className="auth-form-container">
       <form className="auth-form" onSubmit={handleSubmit}>
         <h1 className="auth-form__title">Entrar</h1>
+        <p className="auth-form__subtitle">Acesse sua conta no Mesa Justa</p>
 
         {error && <div className="auth-form__error">{error}</div>}
 
@@ -64,6 +65,12 @@ export default function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
+        </div>
+
+        <div style={{ textAlign: 'right', marginBottom: '0.75rem' }}>
+          <a href="/login" className="auth-form__forgot">
+            Esqueci minha senha
+          </a>
         </div>
 
         <button type="submit" className="auth-form__submit" disabled={loading}>
