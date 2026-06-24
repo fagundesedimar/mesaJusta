@@ -30,6 +30,8 @@ model User {
   updatedAt    DateTime  @updatedAt
 
   profile        Profile?
+  greenCoins    Int        @default(0)
+
   donorDonations Donation[] @relation("DonorDonations")
   ongDonations   Donation[] @relation("OngDonations")
 }

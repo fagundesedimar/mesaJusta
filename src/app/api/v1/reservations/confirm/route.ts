@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { ConfirmDeliverySchema } from '@/lib/schemas/reservation.schema'
 import { verifyToken } from '@/lib/auth/token'
 import { COOKIE_NAME } from '@/lib/auth/cookie'
+import { calcGreenCoins } from '@/lib/gamification/formulas'
 
 export async function POST(request: NextRequest) {
   try {
@@ -32,7 +33,21 @@ export async function POST(request: NextRequest) {
       where: { id: donationId },
     })
 
-    if (!donation || donation.status !== 'RESERVED') {
+    if (!donation) {
+      return NextResponse.json(
+        { error: 'Doação não encontrada.' },
+        { status: 404 }
+      )
+    }
+
+    if (donation.status === 'COLLECTED') {
+      return NextResponse.json(
+        { error: 'Esta doação já foi coletada.' },
+        { status: 409 }
+      )
+    }
+
+    if (donation.status !== 'RESERVED') {
       return NextResponse.json(
         { error: 'Esta doação não está disponível para confirmação de entrega.' },
         { status: 409 }
@@ -46,7 +61,9 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const [updatedDonation] = await prisma.$transaction([
+    const coins = calcGreenCoins(Number(donation.weightKg), donation.category)
+
+    await prisma.$transaction([
       prisma.donation.update({
         where: { id: donationId },
         data: { status: 'COLLECTED' },
@@ -59,10 +76,14 @@ export async function POST(request: NextRequest) {
           executorId: payload.sub,
         },
       }),
+      prisma.user.update({
+        where: { id: donation.donorId },
+        data: { greenCoins: { increment: coins } },
+      }),
     ])
 
     return NextResponse.json(
-      { message: 'Entrega confirmada com sucesso.' },
+      { message: 'Entrega confirmada com sucesso.', greenCoins: coins },
       { status: 200 }
     )
   } catch (error) {

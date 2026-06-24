@@ -65,12 +65,22 @@ export async function GET(request: NextRequest) {
       data: { status: 'EXPIRED' },
     })
 
-    const donations = await prisma.donation.findMany({
-      where: { donorId: payload.sub },
-      orderBy: { createdAt: 'desc' },
-    })
+    const [donations, user] = await Promise.all([
+      prisma.donation.findMany({
+        where: { donorId: payload.sub },
+        orderBy: { createdAt: 'desc' },
+      }),
+      prisma.user.findUnique({
+        where: { id: payload.sub },
+        include: { profile: true },
+      }),
+    ])
 
-    return NextResponse.json(donations)
+    return NextResponse.json({
+      donations,
+      greenCoins: user?.greenCoins ?? 0,
+      establishmentName: user?.profile?.name ?? '',
+    })
   } catch (error) {
     console.error('List donations error:', error)
     return NextResponse.json({ error: 'Erro interno do servidor.' }, { status: 500 })

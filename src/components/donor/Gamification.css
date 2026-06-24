@@ -1,0 +1,86 @@
+.gamification-card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1.25rem;
+}
+
+.green-coins-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.green-coins-card__value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2e7d32;
+}
+
+.green-coins-card__label {
+  font-size: 0.875rem;
+  color: #888;
+}
+
+.green-coins-card__badge {
+  margin-top: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.badge--bronze {
+  background: #d7ccc8;
+  color: #5d4037;
+}
+
+.badge--silver {
+  background: #e0e0e0;
+  color: #424242;
+}
+
+.badge--gold {
+  background: #fff8e1;
+  color: #f57f17;
+}
+
+.ranking-table {
+  margin-top: 1.5rem;
+}
+
+.ranking-table__title {
+  margin: 0 0 1rem;
+  font-size: 1.125rem;
+}
+
+.ranking-table__empty {
+  color: #888;
+  font-size: 0.875rem;
+}
+
+.ranking-table__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ranking-table__table th,
+.ranking-table__table td {
+  text-align: left;
+  padding: 0.75rem;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 0.875rem;
+}
+
+.ranking-table__table th {
+  font-weight: 600;
+  color: #555;
+  background: #f9f9f9;
+}
+
+.ranking-table__row--highlight {
+  background: #e8f5e9;
+  font-weight: 600;
+}
