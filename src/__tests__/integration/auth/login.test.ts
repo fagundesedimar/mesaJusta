@@ -5,6 +5,8 @@ import { hashPassword } from '@/lib/auth/password'
 const API_BASE = 'http://localhost:3000/api/v1/auth'
 
 beforeAll(async () => {
+  await prisma.auditLog.deleteMany()
+  await prisma.donation.deleteMany()
   await prisma.profile.deleteMany()
   await prisma.user.deleteMany()
 
@@ -31,6 +33,8 @@ beforeAll(async () => {
 })
 
 afterAll(async () => {
+  await prisma.auditLog.deleteMany()
+  await prisma.donation.deleteMany()
   await prisma.profile.deleteMany()
   await prisma.user.deleteMany()
 })
