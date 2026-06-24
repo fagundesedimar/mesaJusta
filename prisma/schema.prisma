@@ -66,6 +66,7 @@ model Donation {
 
   @@index([donorId, status])
   @@index([expiresAt])
+  @@index([status, createdAt])
 }
 
 model AuditLog {
