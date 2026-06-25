@@ -64,9 +64,9 @@ export default function NewDonationModal({ onClose, onSuccess }: Props) {
   }
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="modal-title">
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <h2 className="modal-title">Nova Doação</h2>
+        <h2 id="modal-title" className="modal-title">Nova Doação</h2>
 
         {showExpiryAlert && (
           <div className="alert-orange">
@@ -135,7 +135,7 @@ export default function NewDonationModal({ onClose, onSuccess }: Props) {
             />
           </div>
 
-          {error && <div className="modal-error">{error}</div>}
+          {error && <div className="modal-error" role="alert">{error}</div>}
 
           <div className="modal-actions">
             <button type="button" className="modal-btn modal-btn--cancel" onClick={onClose} disabled={loading}>

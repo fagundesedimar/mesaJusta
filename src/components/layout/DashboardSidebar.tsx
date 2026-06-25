@@ -44,15 +44,17 @@ export default function DashboardSidebar() {
   }, [])
 
   return (
-    <aside className="sidebar">
+    <aside className="sidebar" aria-label="Navegação principal">
       <div className="sidebar__logo">Mesa Justa</div>
 
-      <nav>
+      <nav aria-label="Menu principal">
+        {links.length === 0 && <p className="sr-only">Carregando navegação...</p>}
         {links.map((link) => (
           <Link
             key={link.href}
             href={link.href}
             className={`sidebar__link${pathname === link.href ? ' sidebar__link--active' : ''}`}
+            aria-current={pathname === link.href ? 'page' : undefined}
           >
             {link.label}
           </Link>
@@ -69,6 +71,7 @@ export default function DashboardSidebar() {
           href="/api/v1/auth/logout"
           className="sidebar__link"
           style={{ padding: '0.5rem 0', fontSize: '0.8rem' }}
+          aria-label="Sair da conta"
         >
           Sair
         </Link>

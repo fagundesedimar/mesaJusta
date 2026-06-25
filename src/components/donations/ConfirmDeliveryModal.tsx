@@ -58,9 +58,9 @@ export default function ConfirmDeliveryModal({ donationId, onClose, onSuccess }:
   }
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title">
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <h2 className="modal-title">Confirmar Entrega</h2>
+        <h2 id="confirm-modal-title" className="modal-title">Confirmar Entrega</h2>
         <p className="modal-description">
           Insira o token de 6 caracteres fornecido pela ONG no momento da retirada.
         </p>
@@ -76,10 +76,11 @@ export default function ConfirmDeliveryModal({ donationId, onClose, onSuccess }:
               maxLength={6}
               placeholder="Ex: A94D3F"
               autoFocus
+              aria-describedby={error ? 'confirm-error' : undefined}
             />
           </div>
 
-          {error && <div className="modal-error">{error}</div>}
+          {error && <div id="confirm-error" className="modal-error" role="alert">{error}</div>}
 
           <div className="modal-actions">
             <button type="button" className="modal-btn modal-btn--cancel" onClick={onClose} disabled={loading}>

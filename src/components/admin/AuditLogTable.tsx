@@ -76,10 +76,10 @@ export default function AuditLogTable() {
       </div>
 
       {loading ? (
-        <p>Carregando...</p>
+        <p role="status" aria-live="polite">Carregando...</p>
       ) : (
         <>
-          <table className="audit-log-table">
+          <table className="audit-log-table" aria-label="Logs de auditoria">
             <thead>
               <tr>
                 <th>Doação</th>
@@ -105,10 +105,10 @@ export default function AuditLogTable() {
           <div className="pagination">
             <span>{total} registro(s) — Página {page} de {totalPages}</span>
             <div className="pagination-buttons">
-              <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
+              <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} aria-label="Página anterior">
                 Anterior
               </button>
-              <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)}>
+              <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)} aria-label="Próxima página">
                 Próxima
               </button>
             </div>

@@ -44,6 +44,7 @@ export default function DonationListSidebar({
           className="geo-sidebar__select"
           value={selectedRadius ?? ''}
           onChange={(e) => onRadiusChange(e.target.value ? Number(e.target.value) : null)}
+          aria-label="Filtrar por distância"
         >
           {RADIUS_OPTIONS.map((opt) => (
             <option key={opt.label} value={opt.value ?? ''}>
@@ -57,6 +58,7 @@ export default function DonationListSidebar({
           className="geo-sidebar__select"
           value={selectedCategory}
           onChange={(e) => onCategoryChange(e.target.value)}
+          aria-label="Filtrar por categoria"
         >
           <option value="">Todas</option>
           {CATEGORIES.map((cat) => (

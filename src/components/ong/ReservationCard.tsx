@@ -80,6 +80,7 @@ export default function ReservationCard({
           className="reservation-card__copy"
           onClick={() => navigator.clipboard.writeText(reservationToken)}
           title="Copiar token"
+          aria-label={`Copiar token ${reservationToken}`}
         >
           Copiar
         </button>

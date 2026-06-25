@@ -16,6 +16,7 @@
     "seed": "tsx prisma/seed.ts",
     "test:unit": "vitest run src/__tests__/unit/",
     "test:integration": "vitest run src/__tests__/integration/",
+    "test:contract": "vitest run src/__tests__/contract/",
     "test:e2e": "playwright test"
   },
   "repository": {
@@ -45,10 +46,12 @@
     "prisma": "^7.8.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "redis": "^6.0.1",
     "typescript": "^6.0.3",
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@pact-foundation/pact": "^16.5.0",
     "@playwright/test": "^1.61.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
