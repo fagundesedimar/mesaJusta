@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { LoginSchema } from '@/lib/schemas/auth.schema'
 import { verifyPassword } from '@/lib/auth/password'
-import { signToken } from '@/lib/auth/token'
-import { setAuthCookie } from '@/lib/auth/cookie'
+import { signToken, signRefreshToken } from '@/lib/auth/token'
+import { setAuthCookie, setRefreshCookie } from '@/lib/auth/cookie'
 
 export async function POST(request: Request) {
   try {
@@ -39,11 +39,9 @@ export async function POST(request: Request) {
       )
     }
 
-    const token = await signToken({
-      sub: user.id,
-      email: user.email,
-      role: user.role,
-    })
+    const tokenPayload = { sub: user.id, email: user.email, role: user.role }
+    const token = await signToken(tokenPayload)
+    const refreshToken = await signRefreshToken(tokenPayload)
 
     const response = NextResponse.json(
       {
@@ -56,6 +54,7 @@ export async function POST(request: Request) {
     )
 
     setAuthCookie(response, token)
+    setRefreshCookie(response, refreshToken)
     return response
   } catch (error) {
     console.error('Login error:', error)

@@ -54,5 +54,5 @@
 
 - [x] 10.1 Executar `npm run lint` — ✅ sem erros
 - [x] 10.2 Executar `npm run test:unit` — ✅ 27/27 testes passaram (6 files)
-- [ ] 10.3 Executar `npm run test:integration` — ⏳ requer Next.js server rodando + PostgreSQL local
-- [ ] 10.4 Executar `npm run test:e2e` — ⏳ requer Playwright setup + Next.js server
+- [x] 10.3 Executar `npm run test:integration` — ✔ Testes passam com servidor Next.js via globalSetup
+- [x] 10.4 Executar `npm run test:e2e` — ✔ Fluxo E2E validado com Playwright
