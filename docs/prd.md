@@ -93,7 +93,7 @@ O ecossistema é formado por três perfis de usuários principais que operam em 
 - **Descrição**: A ONG interessada em um lote disponível pode efetuar sua reserva. Uma vez acionada, a doação tem seu status atualizado para "Reservada" e é gerado um código único de retirada alfanumérico (Token). Apenas a ONG que realizou a reserva tem o direito de visualizar o endereço detalhado de coleta e confirmar a retirada.
 - **Critérios de Aceitação**:
   - A reserva deve mudar o status de "Disponível" para "Reservada" em tempo real, impedindo que outras ONGs vejam ou tentem reservar o mesmo item.
-  - O sistema deve gerar um token aleatório de 6 caracteres (ex: MJ-849A) para validação no ato da retirada física.
+  - O sistema deve gerar um token aleatório de 6 caracteres alfanuméricos (ex: A94DF2) para validação no ato da retirada física.
   - Deve ser disponibilizado um botão de "Cancelar Reserva" para a ONG, retornando o lote ao status "Disponível".
 
 ### RFN-06 Registro de Coleta e Rastreabilidade

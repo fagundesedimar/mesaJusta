@@ -74,7 +74,7 @@ Gere os templates funcionais para as seguintes 7 interfaces gráficas:
 #### [INT-06] - Painel de Reservas Ativas (ONG)
 - Contêiner: Tabela de conteúdo na área central do Dashboard da ONG.
 - Campos: Detalhes do Alimento, Nome do Doador, Endereço de Coleta.
-- Componente Destaque: Caixa de Token de Retirada (fonte monoespaçada, tamanho grande, ex: "MJ-48F9").
+- Componente Destaque: Caixa de Token de Retirada (fonte monoespaçada, tamanho grande, ex: "A94DF2").
 - Botões/Links: "Cancelar Reserva" (Vermelho), "Copiar Código", e Link "Ver Rota de Retirada" (Abre nova aba com ícone de mapa).
 
 #### [INT-07] - Dashboard Administrativo e Auditoria (Juliana)

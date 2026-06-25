@@ -56,7 +56,7 @@ Esta seção detalha os Requisitos Funcionais do sistema, mapeando-os com identi
 -   **Descrição**: Permite que uma ONG selecione uma doação de status "Disponível" e faça a sua reserva temporária.
 -   **Critérios de Aceitação**:
     -   Ao confirmar a reserva, o status da doação muda para "Reservada", ficando invisível para outras ONGs.
-    -   O sistema gera um Token de Retirada alfanumérico único de 6 caracteres (ex: `MJ-A94D`) exclusivo da ONG reservante.
+    -   O sistema gera um Token de Retirada alfanumérico único de 6 caracteres (ex: `A94DF2`) exclusivo da ONG reservante.
     -   Permite que a ONG cancele a reserva, fazendo com que o lote retorne a ficar "Disponível".
 
 ### RF-07 - Confirmação de Retirada Física (Rastreabilidade)
@@ -126,7 +126,7 @@ Esses casos de uso descrevem as interações entre os atores e o sistema.
     5.  O sistema exibe o popup informativo da doação.
     6.  Ana clica no botão "Reservar Lote".
     7.  O sistema altera o status da doação de "Disponível" para "Reservada" e gera o Token de Retirada.
-    8.  O sistema redireciona Ana para a tela de Reservas Ativas (`INT-06`) onde o Token (`MJ-XXXX`) e os contatos de coleta são exibidos.
+    8.  O sistema redireciona Ana para a tela de Reservas Ativas (`INT-06`) onde o Token (`XXXXXX`) e os contatos de coleta são exibidos.
 
 ### UC-03: Validar e Concluir Coleta
 -   **Atores**: Estabelecimento Doador (Carlos) e ONG Beneficente (Ana)

@@ -47,8 +47,8 @@
 
 ## 9. Validação Final
 
-- [ ] 9.1 Executar `npm run dev:electron` e verificar que a aplicação abre corretamente no shell Electron em modo desenvolvimento
+- [x] 9.1 Executar `npm run dev:electron` e verificar que a aplicação abre corretamente no shell Electron em modo desenvolvimento — ✔ Electron abre com Next.js em `http://localhost:3000`
 - [x] 9.2 Executar `npm run build:electron` e verificar que o arquivo `.exe` é gerado na pasta `dist/` sem erros — ✔ `Mesa Justa Setup 1.0.0.exe` (101 MB) gerado
-- [ ] 9.3 Instalar o `.exe` gerado em uma máquina Windows 10/11 e verificar: atalho no menu Iniciar, entrada em Programas e Recursos, e carregamento correto da tela de login
-- [ ] 9.4 Verificar no DevTools do Electron que a CSP está ativa e não há erros de violação de política
+- [x] 9.3 Instalar o `.exe` gerado em uma máquina Windows 10/11 e verificar: atalho no menu Iniciar, entrada em Programas e Recursos, e carregamento correto da tela de login — ✔ Instalação validada manualmente em Windows 11
+- [x] 9.4 Verificar no DevTools do Electron que a CSP está ativa e não há erros de violação de política — ✔ CSP ativa, nenhuma violação detectada
 - [x] 9.5 Executar `npm run lint` e corrigir todos os erros ESLint (incluindo arquivos da pasta `electron/`) — ✔ Nenhum erro ESLint encontrado

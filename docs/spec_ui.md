@@ -106,7 +106,7 @@ Esta seção define as telas (interfaces gráficas), componentes de interface e 
 - **Tipo de Contêiner**: Tabela responsiva de reservas na área principal de conteúdo da ONG.
 - **Campos**:
   - Colunas: Alimento Reservado, Estabelecimento Doador, Endereço de Retirada, Token de Retirada, Tempo Restante de Validade.
-  - O Token de Retirada é exibido em uma caixa destacada de cor cinza e fonte monoespaçada em tamanho grande (ex: `MJ-A94D`).
+  - O Token de Retirada é exibido em uma caixa destacada de cor cinza e fonte monoespaçada em tamanho grande (ex: `A94DF2`).
 - **Botões**:
   - "Cancelar Reserva" (Botão vermelho que libera o lote novamente para outras ONGs).
   - "Copiar Código" (Copia o Token de Retirada para a área de transferência do usuário).
@@ -169,7 +169,7 @@ O fluxo de navegação do Mesa Justa é organizado de forma a garantir jornadas 
     - Ana clica no botão **"Reservar Lote"** no popup.
     - O sistema solicita confirmação. Ao confirmar, o lote muda de status para **"Reservada"** e Ana é redirecionada para a tela de **Reservas Ativas** (`INT-06`).
 4.  **Fluxo de Retirada**:
-    - Na tela de **Reservas Ativas** (`INT-06`), Ana visualiza o **Token de Retirada** gerado (`MJ-XXXX`).
+    - Na tela de **Reservas Ativas** (`INT-06`), Ana visualiza o **Token de Retirada** gerado (`XXXXXX`).
     - Clica em **"Ver Rota de Retirada"** para abrir a rota no Google Maps e se desloca até o estabelecimento doador.
     - Apresenta o código do token ao responsável pela doação para que ele valide a retirada.
     - Uma vez validada pelo doador, a doação some de sua lista de reservas ativas e passa a constar no seu histórico de coletas finalizadas.
