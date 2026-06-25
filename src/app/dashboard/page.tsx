@@ -5,7 +5,11 @@ import ConfirmDeliveryModal from '@/components/donations/ConfirmDeliveryModal'
 
 interface Donation {
   id: string
+  name: string
   status: string
+  category: string
+  weightKg: number
+  expiresAt: string
   token?: string
 }
 
@@ -29,11 +33,18 @@ export default function DonorDashboard() {
     setConfirmDonationId(null)
   }
 
-  const statusLabel: Record<string, string> = {
+  const STATUS_LABEL: Record<string, string> = {
     AVAILABLE: 'Disponível',
     RESERVED: 'Reservada',
     COLLECTED: 'Retirada',
     EXPIRED: 'Expirada',
+  }
+
+  const STATUS_COLOR: Record<string, string> = {
+    AVAILABLE: '#28a745',
+    RESERVED: '#ffc107',
+    COLLECTED: '#0070f3',
+    EXPIRED: '#dc3545',
   }
 
   return (
@@ -43,7 +54,10 @@ export default function DonorDashboard() {
       <table className="donations-table">
         <thead>
           <tr>
-            <th>ID</th>
+            <th>Nome</th>
+            <th>Categoria</th>
+            <th>Peso (kg)</th>
+            <th>Validade</th>
             <th>Status</th>
             <th>Ação</th>
           </tr>
@@ -51,8 +65,18 @@ export default function DonorDashboard() {
         <tbody>
           {donations.map((donation) => (
             <tr key={donation.id}>
-              <td>{donation.id.slice(0, 8)}...</td>
-              <td>{statusLabel[donation.status] || donation.status}</td>
+              <td>{donation.name}</td>
+              <td>{donation.category}</td>
+              <td>{Number(donation.weightKg).toFixed(1)}</td>
+              <td>{new Date(donation.expiresAt).toLocaleDateString('pt-BR')}</td>
+              <td>
+                <span
+                  className="status-badge"
+                  style={{ backgroundColor: STATUS_COLOR[donation.status] || '#888' }}
+                >
+                  {STATUS_LABEL[donation.status] || donation.status}
+                </span>
+              </td>
               <td>
                 {donation.status === 'RESERVED' && (
                   <button
