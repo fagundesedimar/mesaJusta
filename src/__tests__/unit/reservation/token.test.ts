@@ -2,9 +2,9 @@ import { describe, it, expect } from 'vitest'
 import { generateReservationToken } from '@/lib/reservation/token'
 
 describe('generateReservationToken', () => {
-  it('returns token in format MJ-XXXX', () => {
+  it('returns token in format XXXXXX (6 uppercase alphanumeric)', () => {
     const token = generateReservationToken()
-    expect(token).toMatch(/^MJ-[A-Z0-9]{4}$/)
+    expect(token).toMatch(/^[A-Z0-9]{6}$/)
   })
 
   it('generates unique tokens across 100 calls', () => {
@@ -15,9 +15,9 @@ describe('generateReservationToken', () => {
     expect(tokens.size).toBe(100)
   })
 
-  it('always starts with MJ- prefix', () => {
+  it('has exactly 6 characters', () => {
     for (let i = 0; i < 100; i++) {
-      expect(generateReservationToken().startsWith('MJ-')).toBe(true)
+      expect(generateReservationToken()).toHaveLength(6)
     }
   })
 })

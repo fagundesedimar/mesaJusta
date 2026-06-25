@@ -8,6 +8,5 @@ function randomChar(): string {
 }
 
 export function generateReservationToken(): string {
-  const suffix = Array.from({ length: 4 }, () => randomChar()).join('')
-  return `MJ-${suffix}`
+  return Array.from({ length: 6 }, () => randomChar()).join('')
 }

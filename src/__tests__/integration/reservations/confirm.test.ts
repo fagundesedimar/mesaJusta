@@ -40,17 +40,17 @@ beforeAll(async () => {
   donorToken = await signToken({ sub: donor.id, email: donor.email, role: 'DONOR' })
 
   const d1 = await prisma.donation.create({
-    data: { name: 'Teste', category: 'Mercearia', weightKg: 5, expiresAt: new Date('2030-12-31'), status: 'RESERVED', token: 'ABC123', donorId: donor.id, ongId: ong.id },
+    data: { name: 'Teste', category: 'Mercearia', weightKg: 5, expiresAt: new Date('2030-12-31'), status: 'RESERVED', reservationToken: 'ABC123', donorId: donor.id, reservedByOngId: ong.id },
   })
   donationId = d1.id
 
   const d2 = await prisma.donation.create({
-    data: { name: 'Teste', category: 'Mercearia', weightKg: 5, expiresAt: new Date('2030-12-31'), status: 'AVAILABLE', token: null, donorId: donor.id },
+    data: { name: 'Teste', category: 'Mercearia', weightKg: 5, expiresAt: new Date('2030-12-31'), status: 'AVAILABLE', donorId: donor.id },
   })
   ongDonationId = d2.id
 
   const d3 = await prisma.donation.create({
-    data: { name: 'Teste', category: 'Mercearia', weightKg: 5, expiresAt: new Date('2030-12-31'), status: 'COLLECTED', token: null, donorId: donor.id, ongId: ong.id },
+    data: { name: 'Teste', category: 'Mercearia', weightKg: 5, expiresAt: new Date('2030-12-31'), status: 'COLLECTED', donorId: donor.id, reservedByOngId: ong.id },
   })
   expiredDonationId = d3.id
 })

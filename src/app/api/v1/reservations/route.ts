@@ -21,36 +21,51 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Acesso negado.' }, { status: 403 })
     }
 
-    const reservations = await prisma.donation.findMany({
-      where: {
-        reservedByOngId: payload.sub,
-        status: 'RESERVED',
-      },
-      select: {
-        id: true,
-        name: true,
-        category: true,
-        weightKg: true,
-        reservationToken: true,
-        reservedAt: true,
-        expiresAt: true,
-        donor: {
-          select: {
-            email: true,
-            profile: {
-              select: {
-                name: true,
-                zipCode: true,
-                state: true,
+    const { searchParams } = request.nextUrl
+    const page = Math.max(1, parseInt(searchParams.get('page') ?? '1', 10))
+    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') ?? '20', 10)))
+    const skip = (page - 1) * limit
+
+    const [reservations, total] = await Promise.all([
+      prisma.donation.findMany({
+        where: {
+          reservedByOngId: payload.sub,
+          status: 'RESERVED',
+        },
+        select: {
+          id: true,
+          name: true,
+          category: true,
+          weightKg: true,
+          reservationToken: true,
+          reservedAt: true,
+          expiresAt: true,
+          donor: {
+            select: {
+              email: true,
+              profile: {
+                select: {
+                  name: true,
+                  zipCode: true,
+                  state: true,
+                },
               },
             },
           },
         },
-      },
-      orderBy: { reservedAt: 'desc' },
-    })
+        orderBy: { reservedAt: 'desc' },
+        skip,
+        take: limit,
+      }),
+      prisma.donation.count({
+        where: {
+          reservedByOngId: payload.sub,
+          status: 'RESERVED',
+        },
+      }),
+    ])
 
-    return NextResponse.json({ reservations })
+    return NextResponse.json({ reservations, total, page, limit })
   } catch (error) {
     console.error('List reservations error:', error)
     return NextResponse.json(
@@ -119,6 +134,15 @@ export async function POST(request: NextRequest) {
             reservationToken: token,
             reservedAt: now,
             reservedByOngId: payload.sub,
+          },
+        })
+
+        await tx.auditLog.create({
+          data: {
+            donationId,
+            ongId: payload.sub,
+            donorId: donation.donorId,
+            executorId: payload.sub,
           },
         })
 

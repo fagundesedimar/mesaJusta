@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    if (donation.token !== token) {
+    if (donation.reservationToken !== token) {
       return NextResponse.json(
         { error: 'Token inválido. Verifique com a ONG.' },
         { status: 400 }
@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
       prisma.auditLog.create({
         data: {
           donationId,
-          ongId: donation.ongId!,
+          ongId: donation.reservedByOngId ?? donation.ongId ?? '',
           donorId: donation.donorId,
           executorId: payload.sub,
         },

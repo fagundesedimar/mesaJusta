@@ -59,7 +59,7 @@ beforeAll(async () => {
       expiresAt: new Date('2030-12-31'),
       status: 'RESERVED',
       donorId: donor.id,
-      reservationToken: 'MJ-TEST',
+      reservationToken: 'MJTEST',
       reservedAt: new Date(),
       reservedByOngId: ong.id,
     },
@@ -91,13 +91,13 @@ describe('POST /api/v1/reservations', () => {
     expect(res.status).toBe(201)
     const data = await res.json()
     expect(data.donationId).toBe(availableDonationId)
-    expect(data.reservationToken).toMatch(/^MJ-[A-Z0-9]{4}$/)
+    expect(data.reservationToken).toMatch(/^[A-Z0-9]{6}$/)
     expect(data.reservedAt).toBeTruthy()
     expect(data.expiresAt).toBeTruthy()
 
     const donation = await prisma.donation.findUnique({ where: { id: availableDonationId } })
     expect(donation?.status).toBe('RESERVED')
-    expect(donation?.reservationToken).toMatch(/^MJ-[A-Z0-9]{4}$/)
+    expect(donation?.reservationToken).toMatch(/^[A-Z0-9]{6}$/)
     expect(donation?.reservedByOngId).toBe(ongId)
   })
 
