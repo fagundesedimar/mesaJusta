@@ -1,11 +1,16 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeAll } from 'vitest'
 import { signToken } from '@/lib/auth/token'
 import { COOKIE_NAME } from '@/lib/auth/cookie'
 
 const API_BASE = 'http://localhost:3000/api/v1/admin/dashboard'
 
-const adminToken = await signToken({ sub: 'admin-test', email: 'admin@test.com', role: 'ADMIN' })
-const donorToken = await signToken({ sub: 'donor-test', email: 'donor@test.com', role: 'DONOR' })
+let adminToken: string
+let donorToken: string
+
+beforeAll(async () => {
+  adminToken = await signToken({ sub: 'admin-test', email: 'admin@test.com', role: 'ADMIN' })
+  donorToken = await signToken({ sub: 'donor-test', email: 'donor@test.com', role: 'DONOR' })
+})
 
 describe('GET /api/v1/admin/dashboard', () => {
   it('returns 200 with valid metrics structure', async () => {

@@ -135,10 +135,6 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ donations })
     }
 
-    if (payload.role !== 'DONOR') {
-      return NextResponse.json({ error: 'Acesso negado.' }, { status: 403 })
-    }
-
     await prisma.donation.updateMany({
       where: {
         status: { in: ['AVAILABLE', 'RESERVED'] },
@@ -147,22 +143,32 @@ export async function GET(request: NextRequest) {
       data: { status: 'EXPIRED' },
     })
 
-    const [donations, user] = await Promise.all([
-      prisma.donation.findMany({
-        where: { donorId: payload.sub },
-        orderBy: { createdAt: 'desc' },
-      }),
-      prisma.user.findUnique({
-        where: { id: payload.sub },
-        include: { profile: true },
-      }),
-    ])
+    if (payload.role === 'DONOR') {
+      const [donations, user] = await Promise.all([
+        prisma.donation.findMany({
+          where: { donorId: payload.sub },
+          orderBy: { createdAt: 'desc' },
+        }),
+        prisma.user.findUnique({
+          where: { id: payload.sub },
+          include: { profile: true },
+        }),
+      ])
 
-    return NextResponse.json({
-      donations,
-      greenCoins: user?.greenCoins ?? 0,
-      establishmentName: user?.profile?.name ?? '',
+      return NextResponse.json({
+        donations,
+        greenCoins: user?.greenCoins ?? 0,
+        establishmentName: user?.profile?.name ?? '',
+      })
+    }
+
+    const donations = await prisma.donation.findMany({
+      where: { status: 'AVAILABLE', latitude: { not: null }, longitude: { not: null } },
+      orderBy: { createdAt: 'desc' },
+      take: 100,
     })
+
+    return NextResponse.json({ donations })
   } catch (error) {
     console.error('List donations error:', error)
     return NextResponse.json({ error: 'Erro interno do servidor.' }, { status: 500 })

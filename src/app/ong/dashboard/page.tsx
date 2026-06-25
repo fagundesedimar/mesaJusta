@@ -25,7 +25,7 @@ export default function OngDashboardPage() {
   const [ongLat, setOngLat] = useState<number>(-23.5505)
   const [ongLng, setOngLng] = useState<number>(-46.6333)
   const [selectedCategory, setSelectedCategory] = useState('')
-  const [selectedRadius, setSelectedRadius] = useState<number | null>(null)
+  const [selectedRadius, setSelectedRadius] = useState<number | null>(15)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {

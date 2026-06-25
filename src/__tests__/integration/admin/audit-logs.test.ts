@@ -1,10 +1,14 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeAll } from 'vitest'
 import { signToken } from '@/lib/auth/token'
 import { COOKIE_NAME } from '@/lib/auth/cookie'
 
 const API_BASE = 'http://localhost:3000/api/v1/admin/audit-logs'
 
-const adminToken = await signToken({ sub: 'admin-test', email: 'admin@test.com', role: 'ADMIN' })
+let adminToken: string
+
+beforeAll(async () => {
+  adminToken = await signToken({ sub: 'admin-test', email: 'admin@test.com', role: 'ADMIN' })
+})
 
 describe('GET /api/v1/admin/audit-logs', () => {
   it('returns 200 with pagination structure', async () => {
