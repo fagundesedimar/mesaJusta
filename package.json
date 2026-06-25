@@ -12,7 +12,6 @@
     "build": "next build",
     "build:electron": "cross-env ELECTRON_BUILD=true npm run build && electron-builder",
     "lint": "next lint",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "seed": "tsx prisma/seed.ts",
     "test:unit": "vitest run src/__tests__/unit/",
     "test:integration": "vitest run src/__tests__/integration/",
