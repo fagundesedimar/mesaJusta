@@ -46,7 +46,7 @@ export default async function AdminDashboardPage() {
 
       <div className="kpi-cards">
         <KPICard icon="⚖️" value={`${metrics.totalKgSaved.toFixed(1)} kg`} label="Kg Salvos" />
-        <KPICard icon="🍽️" value={`${metrics.totalMeals.toFixed(0)}`} label="Refeições" />
+        <KPICard icon="👨‍👩‍👧‍👧" value={`${metrics.totalMeals.toFixed(0)}`} label="Famílias Atendidas" />
         <KPICard icon="🌱" value={`${metrics.totalCO2eqKg.toFixed(1)} kg`} label="CO₂ Evitado" />
         <KPICard icon="📦" value={`${metrics.totalDonations}`} label="Doações Coletadas" />
       </div>

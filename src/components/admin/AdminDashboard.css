@@ -1,7 +1,5 @@
 .dashboard-admin {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
+  max-width: 960px;
 }
 
 .dashboard-admin h1 {

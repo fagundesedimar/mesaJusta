@@ -66,7 +66,6 @@ export async function POST(request: NextRequest) {
           ongId: donation.ongId ?? payload.sub,
           donorId: donation.donorId,
           executorId: payload.sub,
-          timestamp: new Date(),
         },
       }),
     ])

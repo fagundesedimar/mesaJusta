@@ -65,7 +65,7 @@ beforeAll(async () => {
       status: 'RESERVED',
       donorId: donor.id,
       ongId: ong.id,
-      token: VALID_TOKEN,
+      reservationToken: VALID_TOKEN,
     },
   })
   donationId = donation.id

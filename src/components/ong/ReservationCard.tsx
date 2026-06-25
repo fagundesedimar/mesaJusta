@@ -76,6 +76,13 @@ export default function ReservationCard({
       <div className="reservation-card__token">
         <span className="reservation-card__token-label">Token de Retirada:</span>
         <code className="reservation-card__token-code">{reservationToken}</code>
+        <button
+          className="reservation-card__copy"
+          onClick={() => navigator.clipboard.writeText(reservationToken)}
+          title="Copiar token"
+        >
+          Copiar
+        </button>
       </div>
 
       {donor?.profile && (
@@ -91,6 +98,19 @@ export default function ReservationCard({
       </div>
 
       <ReservationCountdown expiresAt={expiresAt} />
+
+      <div className="reservation-card__actions">
+        {donor?.profile && (
+          <a
+            className="reservation-card__route"
+            href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${donor.profile.zipCode}, ${donor.profile.state}, Brasil`)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Ver Rota de Retirada
+          </a>
+        )}
+      </div>
 
       <button
         className="reservation-card__cancel"

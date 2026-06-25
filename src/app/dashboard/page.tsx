@@ -15,8 +15,8 @@ export default function DonorDashboard() {
 
   useEffect(() => {
     fetch('/api/v1/donations')
-      .then((res) => res.json())
-      .then((data) => setDonations(data.donations ?? data))
+      .then((res) => res.ok ? res.json() : [])
+      .then((data) => setDonations(Array.isArray(data) ? data : (data.donations ?? [])))
       .catch(() => {})
   }, [])
 

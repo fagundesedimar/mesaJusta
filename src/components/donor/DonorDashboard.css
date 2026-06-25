@@ -1,6 +1,5 @@
 .dashboard-container {
-  max-width: 1100px;
-  margin: 0 auto;
+  max-width: 960px;
 }
 
 .dashboard-container h1 {

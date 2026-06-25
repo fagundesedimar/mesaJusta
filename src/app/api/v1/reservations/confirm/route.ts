@@ -61,6 +61,14 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    const ongId = donation.reservedByOngId ?? donation.ongId
+    if (!ongId) {
+      return NextResponse.json(
+        { error: 'ONG responsável não identificada.' },
+        { status: 400 }
+      )
+    }
+
     const coins = calcGreenCoins(Number(donation.weightKg), donation.category)
 
     await prisma.$transaction([
@@ -71,7 +79,7 @@ export async function POST(request: NextRequest) {
       prisma.auditLog.create({
         data: {
           donationId,
-          ongId: donation.reservedByOngId ?? donation.ongId ?? '',
+          ongId,
           donorId: donation.donorId,
           executorId: payload.sub,
         },

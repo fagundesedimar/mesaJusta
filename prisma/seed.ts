@@ -1,12 +1,14 @@
 import 'dotenv/config'
 import { PrismaClient } from '../generated/prisma/client'
 import { PrismaPg } from '@prisma/adapter-pg'
+import { Pool } from 'pg'
 import bcrypt from 'bcryptjs'
 
 const databaseUrl = process.env.DATABASE_URL
 if (!databaseUrl) throw new Error('DATABASE_URL is required')
 
-const prisma = new PrismaClient({ adapter: new PrismaPg(databaseUrl) })
+const pool = new Pool({ connectionString: databaseUrl })
+const prisma = new PrismaClient({ adapter: new PrismaPg(pool) })
 
 async function seed() {
   console.log('Limpando banco de dados...')
