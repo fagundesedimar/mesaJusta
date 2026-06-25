@@ -5,9 +5,13 @@ import { useState, useEffect, useCallback } from 'react'
 interface AuditLog {
   id: string
   donationId: string
+  donationName: string
   ongId: string
+  ongName: string
   donorId: string
+  donorName: string
   executorId: string
+  executorName: string
   timestamp: string
 }
 
@@ -92,10 +96,10 @@ export default function AuditLogTable() {
             <tbody>
               {data.map((log) => (
                 <tr key={log.id}>
-                  <td>{log.donationId.slice(0, 8)}...</td>
-                  <td>{log.donorId.slice(0, 8)}...</td>
-                  <td>{log.ongId.slice(0, 8)}...</td>
-                  <td>{log.executorId.slice(0, 8)}...</td>
+                  <td>{log.donationName}</td>
+                  <td>{log.donorName}</td>
+                  <td>{log.ongName}</td>
+                  <td>{log.executorName}</td>
                   <td>{new Date(log.timestamp).toLocaleString('pt-BR')}</td>
                 </tr>
               ))}

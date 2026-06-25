@@ -40,8 +40,39 @@ export async function GET(request: NextRequest) {
       prisma.auditLog.count({ where }),
     ])
 
+    const userIds = new Set<string>()
+    const donationIds = new Set<string>()
+    for (const log of data) {
+      if (log.donorId) userIds.add(log.donorId)
+      if (log.ongId) userIds.add(log.ongId)
+      if (log.executorId) userIds.add(log.executorId)
+      donationIds.add(log.donationId)
+    }
+
+    const [users, donations] = await Promise.all([
+      prisma.user.findMany({
+        where: { id: { in: Array.from(userIds) } },
+        include: { profile: true },
+      }),
+      prisma.donation.findMany({
+        where: { id: { in: Array.from(donationIds) } },
+        select: { id: true, name: true },
+      }),
+    ])
+
+    const userMap = new Map(users.map(u => [u.id, u.profile?.name ?? u.email]))
+    const donationMap = new Map(donations.map(d => [d.id, d.name]))
+
+    const enriched = data.map(log => ({
+      ...log,
+      donorName: userMap.get(log.donorId) ?? log.donorId,
+      ongName:   userMap.get(log.ongId) ?? log.ongId,
+      executorName: userMap.get(log.executorId) ?? log.executorId,
+      donationName: donationMap.get(log.donationId) ?? log.donationId,
+    }))
+
     return NextResponse.json({
-      data,
+      data: enriched,
       total,
       page,
       totalPages: Math.ceil(total / PAGE_SIZE),
