@@ -33,10 +33,10 @@ beforeAll(async () => {
 })
 
 afterAll(async () => {
-  await prisma.auditLog.deleteMany()
-  await prisma.donation.deleteMany()
-  await prisma.profile.deleteMany()
-  await prisma.user.deleteMany()
+  await prisma.auditLog.deleteMany().catch(() => {})
+  await prisma.donation.deleteMany().catch(() => {})
+  await prisma.profile.deleteMany().catch(() => {})
+  await prisma.user.deleteMany().catch(() => {})
 })
 
 describe('POST /api/v1/auth/login', () => {

@@ -37,7 +37,9 @@ describe('Donations API contract', () => {
       })
 
     await provider.executeTest(async (mockServer) => {
-      const res = await fetch(`${mockServer.url}/api/v1/donations?lat=-23.5&lng=-46.6&radius=15`)
+      const res = await fetch(`${mockServer.url}/api/v1/donations?lat=-23.5&lng=-46.6&radius=15`, {
+        headers: { Accept: 'application/json' },
+      })
       expect(res.status).toBe(200)
       const body = await res.json()
       expect(body.donations).toBeDefined()
@@ -61,7 +63,9 @@ describe('Donations API contract', () => {
       })
 
     await provider.executeTest(async (mockServer) => {
-      const res = await fetch(`${mockServer.url}/api/v1/donations`)
+      const res = await fetch(`${mockServer.url}/api/v1/donations`, {
+        headers: { Accept: 'application/json' },
+      })
       expect(res.status).toBe(401)
     })
   })

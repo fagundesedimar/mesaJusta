@@ -9,6 +9,7 @@ export async function setup(): Promise<void> {
       cwd: path.resolve(__dirname),
       stdio: 'pipe',
       env: { ...process.env, NODE_ENV: 'test' },
+      shell: true,
     })
 
     let resolved = false
