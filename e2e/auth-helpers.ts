@@ -49,6 +49,21 @@ function parseSetCookieHeader(header: string, url: string): CookieInput {
   return cookie
 }
 
+export async function cleanupTestUser(
+  api: { post: (url: string, options?: { data?: unknown }) => Promise<{ status: () => number; json: () => Promise<unknown> }> },
+  email: string
+) {
+  try {
+    const response = await api.post('/api/v1/auth/cleanup', {
+      data: { email },
+    })
+    const data = await response.json() as { message?: string; error?: string }
+    console.log(`[cleanup] ${email}: ${data.message ?? data.error ?? ''}`)
+  } catch (err) {
+    console.error(`[cleanup] Failed to delete ${email}:`, err)
+  }
+}
+
 export async function loginWithApi(page: Page, email: string, password: string) {
   const response = await page.request.post('/api/v1/auth/login', {
     data: { email, password },

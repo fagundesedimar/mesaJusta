@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { cleanupTestUser } from '../../../e2e/auth-helpers'
 
 test.describe('Login flow', () => {
   const validUser = {
@@ -21,6 +22,10 @@ test.describe('Login flow', () => {
         zipCode: validUser.zipCode,
       },
     })
+  })
+
+  test.afterEach(async ({ request }) => {
+    await cleanupTestUser(request, validUser.email)
   })
 
   test('should log in successfully and persist session cookie', async ({ page }) => {

@@ -1,7 +1,13 @@
 import { test, expect } from '@playwright/test'
+import { cleanupTestUser } from '../auth-helpers'
+
+const email = `admin_e2e_${Date.now()}@test.com`
+
+test.afterEach(async ({ request }) => {
+  await cleanupTestUser(request, email)
+})
 
 test('admin views dashboard and exports ESG report', async ({ page }) => {
-  const email = `admin_e2e_${Date.now()}@test.com`
 
   // Register as ADMIN
   await page.goto('/register')

@@ -1,8 +1,14 @@
 import { test, expect } from '@playwright/test'
+import { cleanupTestUser } from '../auth-helpers'
+
+const email = `ong_geo_${Date.now()}@test.com`
+
+test.afterEach(async ({ request }) => {
+  await cleanupTestUser(request, email)
+})
 
 test('ONG sees map and sidebar with donation filters', async ({ page }) => {
   // Register ONG
-  const email = `ong_geo_${Date.now()}@test.com`
 
   await page.goto('/register')
   await page.fill('#name', 'ONG Geográfica')

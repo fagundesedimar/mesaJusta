@@ -130,3 +130,35 @@
 .btn-confirm:hover {
   background: #e65100;
 }
+
+.btn-delete {
+  padding: 0.35rem 0.75rem;
+  background: var(--color-error);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: var(--font-family);
+}
+
+.btn-delete:hover {
+  background: #b71c1c;
+}
+
+.delete-warning {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  margin: 0 0 1rem;
+}
+
+.modal-btn--danger {
+  background: var(--color-error);
+  color: #fff;
+}
+
+.modal-btn--danger:hover:not(:disabled) {
+  background: #b71c1c;
+}

@@ -1,8 +1,13 @@
 import { test, expect } from '@playwright/test'
-import { loginWithApi } from '../auth-helpers'
+import { loginWithApi, cleanupTestUser } from '../auth-helpers'
+
+const email = `donor_${Date.now()}@test.com`
+
+test.afterEach(async ({ request }) => {
+  await cleanupTestUser(request, email)
+})
 
 test('register donor and login', async ({ page }) => {
-  const email = `donor_${Date.now()}@test.com`
 
   await page.goto('/register')
 

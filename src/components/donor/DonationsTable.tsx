@@ -1,5 +1,8 @@
+'use client'
+
 import { useState } from 'react'
 import NewDonationModal from '@/components/donations/NewDonationModal'
+import '@/components/donations/NewDonationModal.css'
 
 interface Donation {
   id: string
@@ -31,6 +34,31 @@ const STATUS_COLOR: Record<string, string> = {
 
 export default function DonationsTable({ donations, onRefresh }: Props) {
   const [showModal, setShowModal] = useState(false)
+  const [deleteTarget, setDeleteTarget] = useState<Donation | null>(null)
+  const [deleting, setDeleting] = useState(false)
+
+  async function handleDelete() {
+    if (!deleteTarget) return
+    setDeleting(true)
+
+    try {
+      const res = await fetch(`/api/v1/donations/${deleteTarget.id}`, {
+        method: 'DELETE',
+      })
+
+      if (res.ok) {
+        setDeleteTarget(null)
+        onRefresh()
+      } else {
+        const data = await res.json()
+        alert(data.error || 'Erro ao excluir doação.')
+      }
+    } catch {
+      alert('Erro de conexão. Tente novamente.')
+    } finally {
+      setDeleting(false)
+    }
+  }
 
   return (
     <div>
@@ -49,6 +77,7 @@ export default function DonationsTable({ donations, onRefresh }: Props) {
             <th>Peso (kg)</th>
             <th>Validade</th>
             <th>Status</th>
+            <th>Ações</th>
           </tr>
         </thead>
         <tbody>
@@ -66,6 +95,16 @@ export default function DonationsTable({ donations, onRefresh }: Props) {
                   {STATUS_LABEL[d.status] || d.status}
                 </span>
               </td>
+              <td>
+                {d.status === 'AVAILABLE' && (
+                  <button
+                    className="btn-delete"
+                    onClick={() => setDeleteTarget(d)}
+                  >
+                    Excluir
+                  </button>
+                )}
+              </td>
             </tr>
           ))}
         </tbody>
@@ -76,6 +115,35 @@ export default function DonationsTable({ donations, onRefresh }: Props) {
           onClose={() => setShowModal(false)}
           onSuccess={() => { setShowModal(false); onRefresh() }}
         />
+      )}
+
+      {deleteTarget && (
+        <div className="modal-overlay" onClick={() => !deleting && setDeleteTarget(null)} role="dialog" aria-modal="true" aria-labelledby="delete-modal-title">
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h2 id="delete-modal-title" className="modal-title">Excluir Doação</h2>
+            <p>Tem certeza que deseja excluir o lote <strong>{deleteTarget.name}</strong>?</p>
+            <p className="delete-warning">Esta ação não pode ser desfeita.</p>
+
+            <div className="modal-actions">
+              <button
+                type="button"
+                className="modal-btn modal-btn--cancel"
+                onClick={() => setDeleteTarget(null)}
+                disabled={deleting}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className="modal-btn modal-btn--danger"
+                onClick={handleDelete}
+                disabled={deleting}
+              >
+                {deleting ? 'Excluindo...' : 'Confirmar Exclusão'}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )

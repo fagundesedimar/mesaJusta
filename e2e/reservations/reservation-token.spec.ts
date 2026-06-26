@@ -1,7 +1,16 @@
 import { test, expect } from '@playwright/test'
+import { cleanupTestUser } from '../auth-helpers'
+
+const emailRes = `ong_e2e_res_${Date.now()}@test.com`
+const emailEmpty = `ong_e2e_empty_${Date.now()}@test.com`
+
+test.afterEach(async ({ request }) => {
+  await cleanupTestUser(request, emailRes)
+  await cleanupTestUser(request, emailEmpty)
+})
 
 test('ONG reserves and cancels a donation lot', async ({ page }) => {
-  const email = `ong_e2e_res_${Date.now()}@test.com`
+  const email = emailRes
 
   // Register ONG
   await page.goto('/register')
@@ -36,7 +45,7 @@ test('ONG reserves and cancels a donation lot', async ({ page }) => {
 })
 
 test('ONG reservations page shows empty state', async ({ page }) => {
-  const email = `ong_e2e_empty_${Date.now()}@test.com`
+  const email = emailEmpty
 
   await page.goto('/register')
   await page.fill('#name', 'ONG Vazia')
