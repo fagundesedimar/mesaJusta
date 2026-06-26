@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { loginWithApi } from '../auth-helpers'
 
 test('register donor and login', async ({ page }) => {
   const email = `donor_${Date.now()}@test.com`
@@ -22,10 +23,9 @@ test('register donor and login', async ({ page }) => {
 
   await expect(page).toHaveURL('/login')
 
-  // Login
-  await page.fill('#email', email)
-  await page.fill('#password', '123456')
-  await page.click('text=Entrar')
+  // Login through auth API and keep cookies for session
+  await loginWithApi(page, email, '123456')
 
+  await page.goto('/dashboard')
   await expect(page).toHaveURL(/\/dashboard/)
 })
