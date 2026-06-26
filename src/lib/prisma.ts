@@ -1,16 +1,23 @@
 import { PrismaClient } from '../../generated/prisma/client'
 import type { Prisma } from '../../generated/prisma/client'
 import { PrismaPg } from '@prisma/adapter-pg'
+import { Pool } from 'pg'
 
 const globalForPrisma = globalThis as unknown as { prisma: InstanceType<typeof PrismaClient> }
 
-const databaseUrl = process.env.DATABASE_URL
+const databaseUrl = process.env.POSTGRES_URL || process.env.POSTGRES_PRISMA_URL || process.env.DATABASE_URL
 if (!databaseUrl) {
-  throw new Error('DATABASE_URL environment variable is required')
+  throw new Error('POSTGRES_URL or DATABASE_URL environment variable is required')
 }
 
+const pool = new Pool({
+  connectionString: databaseUrl,
+  ssl: { rejectUnauthorized: false },
+  connectionTimeoutMillis: 10000,
+})
+
 export const prisma = globalForPrisma.prisma ?? new PrismaClient({
-  adapter: new PrismaPg(databaseUrl),
+  adapter: new PrismaPg(pool),
 })
 
 if (process.env.NODE_ENV !== 'production') {
