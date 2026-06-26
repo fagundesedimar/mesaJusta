@@ -5,15 +5,16 @@ import { Pool } from 'pg'
 
 const globalForPrisma = globalThis as unknown as { prisma: InstanceType<typeof PrismaClient> }
 
-const databaseUrl = process.env.POSTGRES_URL || process.env.POSTGRES_PRISMA_URL || process.env.DATABASE_URL
-if (!databaseUrl) {
+const pgUrl = process.env.POSTGRES_URL || process.env.POSTGRES_PRISMA_URL || process.env.DATABASE_URL
+if (!pgUrl) {
   throw new Error('POSTGRES_URL or DATABASE_URL environment variable is required')
 }
 
+const cleanUrl = pgUrl.replace(/sslmode=[^&]*/, 'sslmode=no-verify')
+
 const pool = new Pool({
-  connectionString: databaseUrl,
-  ssl: { rejectUnauthorized: false },
-  connectionTimeoutMillis: 10000,
+  connectionString: cleanUrl,
+  connectionTimeoutMillis: 15000,
 })
 
 export const prisma = globalForPrisma.prisma ?? new PrismaClient({
