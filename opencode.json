@@ -31,6 +31,23 @@
         "run-test-mcp-server"
       ],
       "enabled": true
+    },
+    "sonarqube": {
+      "type": "local",
+      "command": [
+        "docker",
+        "run",
+        "-i",
+        "--rm",
+        "-v",
+        "${workspaceRoot}:/app/mcp-workspace",
+        "-e",
+        "SONAR_TOKEN=${env:SONARQUBE_TOKEN}",
+        "-e",
+        "SONAR_HOST_URL=${env:SONARQUBE_HOST}",
+        "SonarSource/sonarqube-mcp-server"
+      ],
+      "enabled": true
     }
   },
   "tools": {
