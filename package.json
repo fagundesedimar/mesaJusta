@@ -7,7 +7,7 @@
     "seed": "tsx prisma/seed.ts"
   },
   "scripts": {
-    "dev": "next dev",
+    "dev": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 PORT=3000 next dev -p 3000",
     "dev:electron": "cross-env NODE_ENV=development concurrently \"next dev\" \"wait-on http://localhost:3000 && electron .\"",
     "build": "prisma generate && next build",
     "build:electron": "cross-env ELECTRON_BUILD=true npm run build && electron-builder",
