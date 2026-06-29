@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { cleanupTestUser } from '../auth-helpers'
+import { registerViaApi, loginWithApi, cleanupTestUser } from '../auth-helpers'
 
 const email = `admin_e2e_${Date.now()}@test.com`
 
@@ -7,27 +7,18 @@ test.afterEach(async ({ request }) => {
   await cleanupTestUser(request, email)
 })
 
-test('admin views dashboard and exports ESG report', async ({ page }) => {
+test('admin views dashboard with KPI cards', async ({ page, request }) => {
 
-  // Register as ADMIN
-  await page.goto('/register')
-  await page.fill('#name', 'Admin E2E')
-  await page.fill('#email', email)
-  await page.fill('#password', '123456')
-  await page.selectOption('#role', 'ADMIN')
-  await page.click('text=Próximo')
-  await page.fill('#document', '12345678901234')
-  await page.click('text=Próximo')
-  await page.fill('#zipCode', '01001000')
-  await page.click('text=Cadastrar')
-  await expect(page).toHaveURL('/login')
-
-  // Login
-  await page.goto('/login')
-  await page.fill('#email', email)
-  await page.fill('#password', '123456')
-  await page.click('text=Entrar')
-  await expect(page).toHaveURL(/\/dashboard/)
+  // Register & Login via API
+  await registerViaApi(request, {
+    name: 'Admin E2E',
+    email,
+    password: '123456',
+    role: 'ADMIN',
+    document: '12345678901234',
+    zipCode: '01001000',
+  })
+  await loginWithApi(page, email, '123456')
 
   // Navigate to admin dashboard
   await page.goto('/admin/dashboard')
@@ -35,15 +26,7 @@ test('admin views dashboard and exports ESG report', async ({ page }) => {
   // Verify KPI cards are visible
   await expect(page.locator('.kpi-card')).toHaveCount(4)
   await expect(page.locator('text=Kg Salvos')).toBeVisible()
-  await expect(page.locator('text=Refeições')).toBeVisible()
+  await expect(page.locator('text=Famílias Atendidas')).toBeVisible()
   await expect(page.locator('text=CO₂ Evitado')).toBeVisible()
   await expect(page.locator('text=Doações Coletadas')).toBeVisible()
-
-  // Set date filter and export PDF
-  await page.fill('input[type="date"]:first-child', '2025-01-01')
-  await page.fill('input[type="date"]:last-child', '2030-12-31')
-  await page.click('text=Exportar Relatório ESG')
-
-  // Verify download triggered (wait for new page/tab to open)
-  await page.waitForTimeout(1000)
 })

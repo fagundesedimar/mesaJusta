@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { cleanupTestUser } from '../auth-helpers'
+import { registerViaApi, loginWithApi, cleanupTestUser } from '../auth-helpers'
 
 const email = `donor_gami_${Date.now()}@test.com`
 
@@ -7,27 +7,21 @@ test.afterEach(async ({ request }) => {
   await cleanupTestUser(request, email)
 })
 
-test('donor sees green coins card and ranking on dashboard', async ({ page }) => {
+test('donor sees green coins card and ranking on dashboard', async ({ page, request }) => {
 
-  // Register donor
-  await page.goto('/register')
-  await page.fill('#name', 'Doador Gamificação')
-  await page.fill('#email', email)
-  await page.fill('#password', '123456')
-  await page.selectOption('#role', 'DONOR')
-  await page.click('text=Próximo')
-  await page.fill('#document', '12345678901')
-  await page.click('text=Próximo')
-  await page.fill('#zipCode', '01001000')
-  await page.click('text=Cadastrar')
-  await expect(page).toHaveURL('/login')
+  // Register & Login via API
+  await registerViaApi(request, {
+    name: 'Doador Gamificação',
+    email,
+    password: '123456',
+    role: 'DONOR',
+    document: '12345678901',
+    zipCode: '01001000',
+  })
+  await loginWithApi(page, email, '123456')
 
-  // Login
-  await page.goto('/login')
-  await page.fill('#email', email)
-  await page.fill('#password', '123456')
-  await page.click('text=Entrar')
-  await expect(page).toHaveURL(/\/dashboard/)
+  // Navigate to donor dashboard with gamification
+  await page.goto('/dashboard/donor')
 
   // Check that the green coins card is visible
   await expect(page.locator('.green-coins-card')).toBeVisible()

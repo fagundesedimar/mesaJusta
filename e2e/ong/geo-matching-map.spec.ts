@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { cleanupTestUser } from '../auth-helpers'
+import { registerViaApi, loginWithApi, cleanupTestUser } from '../auth-helpers'
 
 const email = `ong_geo_${Date.now()}@test.com`
 
@@ -7,27 +7,18 @@ test.afterEach(async ({ request }) => {
   await cleanupTestUser(request, email)
 })
 
-test('ONG sees map and sidebar with donation filters', async ({ page }) => {
-  // Register ONG
+test('ONG sees map and sidebar with donation filters', async ({ page, request }) => {
 
-  await page.goto('/register')
-  await page.fill('#name', 'ONG Geográfica')
-  await page.fill('#email', email)
-  await page.fill('#password', '123456')
-  await page.selectOption('#role', 'ONG')
-  await page.click('text=Próximo')
-  await page.fill('#document', '11111111111111')
-  await page.click('text=Próximo')
-  await page.fill('#zipCode', '01001000')
-  await page.click('text=Cadastrar')
-  await expect(page).toHaveURL('/login')
-
-  // Login
-  await page.goto('/login')
-  await page.fill('#email', email)
-  await page.fill('#password', '123456')
-  await page.click('text=Entrar')
-  await expect(page).toHaveURL(/\/dashboard/)
+  // Register & Login via API
+  await registerViaApi(request, {
+    name: 'ONG Geográfica',
+    email,
+    password: '123456',
+    role: 'ONG',
+    document: '11111111111111',
+    zipCode: '01001000',
+  })
+  await loginWithApi(page, email, '123456')
 
   // Navigate to ONG dashboard (if redirected elsewhere)
   await page.goto('/ong/dashboard')

@@ -12,7 +12,7 @@ type CookieInput = {
 
 const DEFAULT_BASE_URL = process.env.PLAYWRIGHT_BASE_URL ?? `http://localhost:${process.env.FRONTEND_PORT ?? '3000'}`
 
-function parseSetCookieHeader(header: string, url: string): CookieInput {
+function parseSetCookieHeader(header: string): CookieInput {
   const parts = header.split(';').map((part) => part.trim())
   const [nameValue, ...attrs] = parts
   const [name, ...valueParts] = nameValue.split('=')
@@ -21,7 +21,6 @@ function parseSetCookieHeader(header: string, url: string): CookieInput {
   const cookie: CookieInput = {
     name,
     value,
-    url,
     path: '/',
   }
 
@@ -64,6 +63,48 @@ export async function cleanupTestUser(
   }
 }
 
+export async function registerViaApi(
+  api: { post: (url: string, options?: { data?: unknown }) => Promise<{ status: () => number; json: () => Promise<unknown> }> },
+  data: {
+    name: string
+    email: string
+    password: string
+    role: string
+    document: string
+    zipCode: string
+  }
+) {
+  const response = await api.post('/api/v1/auth/register', { data })
+  if (response.status() !== 201) {
+    const body = await response.json() as { error?: unknown }
+    throw new Error(`Register API failed: ${JSON.stringify(body)}`)
+  }
+}
+
+export async function registerViaUI(
+  page: Page,
+  data: {
+    name: string
+    email: string
+    password: string
+    role: string
+    document: string
+    zipCode: string
+  }
+) {
+  await page.goto('/login')
+  await page.click('text=Criar Conta')
+  await page.fill('#name', data.name)
+  await page.fill('#reg-email', data.email)
+  await page.fill('#reg-password', data.password)
+  await page.selectOption('#role', data.role)
+  await page.click('text=Próximo')
+  await page.fill('#document', data.document)
+  await page.click('text=Próximo')
+  await page.fill('#zipCode', data.zipCode)
+  await page.click('text=Confirmar Cadastro')
+}
+
 export async function loginWithApi(page: Page, email: string, password: string) {
   const response = await page.request.post('/api/v1/auth/login', {
     data: { email, password },
@@ -78,8 +119,8 @@ export async function loginWithApi(page: Page, email: string, password: string) 
     throw new Error('Login response did not return set-cookie headers')
   }
 
-  const cookies = cookieHeaders.map((header) => parseSetCookieHeader(header.value, DEFAULT_BASE_URL))
-  await page.context().addCookies(cookies)
+  const cookies = cookieHeaders.map((header) => parseSetCookieHeader(header.value))
+  await page.context().addCookies(cookies.map((c) => ({ ...c, domain: 'localhost' })))
 
   return response
 }

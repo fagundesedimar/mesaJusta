@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { cleanupTestUser } from '../auth-helpers'
+import { registerViaApi, loginWithApi, cleanupTestUser } from '../auth-helpers'
 
 const emailRes = `ong_e2e_res_${Date.now()}@test.com`
 const emailEmpty = `ong_e2e_empty_${Date.now()}@test.com`
@@ -9,28 +9,17 @@ test.afterEach(async ({ request }) => {
   await cleanupTestUser(request, emailEmpty)
 })
 
-test('ONG reserves and cancels a donation lot', async ({ page }) => {
-  const email = emailRes
-
-  // Register ONG
-  await page.goto('/register')
-  await page.fill('#name', 'ONG Reserva')
-  await page.fill('#email', email)
-  await page.fill('#password', '123456')
-  await page.selectOption('#role', 'ONG')
-  await page.click('text=Próximo')
-  await page.fill('#document', '11111111111111')
-  await page.click('text=Próximo')
-  await page.fill('#zipCode', '01001000')
-  await page.click('text=Cadastrar')
-  await expect(page).toHaveURL('/login')
-
-  // Login
-  await page.goto('/login')
-  await page.fill('#email', email)
-  await page.fill('#password', '123456')
-  await page.click('text=Entrar')
-  await expect(page).toHaveURL(/\/dashboard/)
+test('ONG reserves and cancels a donation lot', async ({ page, request }) => {
+  // Register & Login via API
+  await registerViaApi(request, {
+    name: 'ONG Reserva',
+    email: emailRes,
+    password: '123456',
+    role: 'ONG',
+    document: '11111111111111',
+    zipCode: '01001000',
+  })
+  await loginWithApi(page, emailRes, '123456')
 
   // Navigate to ONG dashboard
   await page.goto('/ong/dashboard')
@@ -44,26 +33,17 @@ test('ONG reserves and cancels a donation lot', async ({ page }) => {
   }
 })
 
-test('ONG reservations page shows empty state', async ({ page }) => {
-  const email = emailEmpty
-
-  await page.goto('/register')
-  await page.fill('#name', 'ONG Vazia')
-  await page.fill('#email', email)
-  await page.fill('#password', '123456')
-  await page.selectOption('#role', 'ONG')
-  await page.click('text=Próximo')
-  await page.fill('#document', '11111111111111')
-  await page.click('text=Próximo')
-  await page.fill('#zipCode', '01001000')
-  await page.click('text=Cadastrar')
-  await expect(page).toHaveURL('/login')
-
-  await page.goto('/login')
-  await page.fill('#email', email)
-  await page.fill('#password', '123456')
-  await page.click('text=Entrar')
-  await expect(page).toHaveURL(/\/dashboard/)
+test('ONG reservations page shows empty state', async ({ page, request }) => {
+  // Register & Login via API
+  await registerViaApi(request, {
+    name: 'ONG Vazia',
+    email: emailEmpty,
+    password: '123456',
+    role: 'ONG',
+    document: '11111111111111',
+    zipCode: '01001000',
+  })
+  await loginWithApi(page, emailEmpty, '123456')
 
   await page.goto('/ong/reservations')
   await page.waitForLoadState('networkidle')
