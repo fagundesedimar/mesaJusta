@@ -53,6 +53,7 @@ export default function DashboardSidebar() {
           <Link
             key={link.href}
             href={link.href}
+            prefetch={false}
             className={`sidebar__link${pathname === link.href ? ' sidebar__link--active' : ''}`}
             aria-current={pathname === link.href ? 'page' : undefined}
           >

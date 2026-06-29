@@ -9,7 +9,7 @@ export function setAuthCookie(response: NextResponse, token: string): void {
   response.cookies.set(COOKIE_NAME, token, {
     httpOnly: true,
     secure: true,
-    sameSite: 'strict',
+    sameSite: 'lax',
     maxAge: MAX_AGE,
     path: '/',
   })
@@ -19,7 +19,7 @@ export function setRefreshCookie(response: NextResponse, token: string): void {
   response.cookies.set(REFRESH_COOKIE_NAME, token, {
     httpOnly: true,
     secure: true,
-    sameSite: 'strict',
+    sameSite: 'lax',
     maxAge: REFRESH_MAX_AGE,
     path: '/api/v1/auth/refresh',
   })
@@ -29,14 +29,14 @@ export function clearAuthCookie(response: NextResponse): void {
   response.cookies.set(COOKIE_NAME, '', {
     httpOnly: true,
     secure: true,
-    sameSite: 'strict',
+    sameSite: 'lax',
     maxAge: 0,
     path: '/',
   })
   response.cookies.set(REFRESH_COOKIE_NAME, '', {
     httpOnly: true,
     secure: true,
-    sameSite: 'strict',
+    sameSite: 'lax',
     maxAge: 0,
     path: '/api/v1/auth/refresh',
   })

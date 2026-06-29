@@ -3,7 +3,7 @@ import type { Page } from '@playwright/test'
 type CookieInput = {
   name: string
   value: string
-  url: string
+  url?: string
   path?: string
   secure?: boolean
   httpOnly?: boolean

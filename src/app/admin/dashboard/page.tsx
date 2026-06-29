@@ -1,5 +1,9 @@
+export const dynamic = 'force-dynamic'
+
 import KPICard from '@/components/admin/KPICard'
 import AuditLogTable from '@/components/admin/AuditLogTable'
+import { prisma } from '@/lib/prisma'
+import { calcMeals, calcCO2eq, calcTons } from '@/lib/esg/formulas'
 import '@/components/admin/AdminDashboard.css'
 
 interface DashboardMetrics {
@@ -13,27 +17,36 @@ interface DashboardMetrics {
 
 async function getMetrics(): Promise<DashboardMetrics> {
   try {
-    const { cookies } = await import('next/headers')
-    const cookieStore = await cookies()
-    const token = cookieStore.get('auth_token')?.value
-
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/v1/admin/dashboard`, {
-      headers: token ? { Cookie: `auth_token=${token}` } : {},
-      cache: 'no-store',
+    const aggregation = await prisma.donation.aggregate({
+      _sum: { weightKg: true },
+      _count: true,
+      where: { status: 'COLLECTED' },
     })
 
-    if (res.ok) return res.json()
-  } catch {
-    // fallback to zeros
-  }
+    const totalKgSaved = Number(aggregation._sum.weightKg ?? 0)
 
-  return {
-    totalKgSaved: 0,
-    totalTonsSaved: 0,
-    totalMeals: 0,
-    totalCO2eqKg: 0,
-    totalDonations: 0,
-    totalONGs: 0,
+    const ongCount = await prisma.donation.groupBy({
+      by: ['ongId'],
+      where: { status: 'COLLECTED', ongId: { not: null } },
+    })
+
+    return {
+      totalKgSaved,
+      totalTonsSaved: calcTons(totalKgSaved),
+      totalMeals: calcMeals(totalKgSaved),
+      totalCO2eqKg: calcCO2eq(totalKgSaved),
+      totalDonations: aggregation._count,
+      totalONGs: ongCount.length,
+    }
+  } catch {
+    return {
+      totalKgSaved: 0,
+      totalTonsSaved: 0,
+      totalMeals: 0,
+      totalCO2eqKg: 0,
+      totalDonations: 0,
+      totalONGs: 0,
+    }
   }
 }
 
