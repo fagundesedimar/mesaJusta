@@ -5,9 +5,9 @@ import { Pool } from 'pg'
 
 const globalForPrisma = globalThis as unknown as { prisma: InstanceType<typeof PrismaClient> }
 
-const pgUrl = process.env.POSTGRES_URL || process.env.POSTGRES_PRISMA_URL || process.env.DATABASE_URL
+const pgUrl = process.env.POSTGRES_URL || process.env.POSTGRES_PRISMA_URL || process.env.DATABASE_URL || process.env.DIRECT_URL
 if (!pgUrl) {
-  throw new Error('POSTGRES_URL or DATABASE_URL environment variable is required')
+  throw new Error('POSTGRES_URL, POSTGRES_PRISMA_URL, DATABASE_URL or DIRECT_URL environment variable is required')
 }
 
 const cleanUrl = pgUrl.replace(/sslmode=[^&]*/, 'sslmode=no-verify')
@@ -15,7 +15,7 @@ const cleanUrl = pgUrl.replace(/sslmode=[^&]*/, 'sslmode=no-verify')
 const pool = new Pool({
   connectionString: cleanUrl,
   connectionTimeoutMillis: 15000,
-  ssl: pgUrl.includes('supabase.co') ? { rejectUnauthorized: false } : undefined,
+  ssl: pgUrl.includes('supabase') ? { rejectUnauthorized: false } : undefined,
 })
 
 export const prisma = globalForPrisma.prisma ?? new PrismaClient({
