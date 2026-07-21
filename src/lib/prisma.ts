@@ -15,6 +15,7 @@ const cleanUrl = pgUrl.replace(/sslmode=[^&]*/, 'sslmode=no-verify')
 const pool = new Pool({
   connectionString: cleanUrl,
   connectionTimeoutMillis: 15000,
+  ssl: pgUrl.includes('supabase.co') ? { rejectUnauthorized: false } : undefined,
 })
 
 export const prisma = globalForPrisma.prisma ?? new PrismaClient({
