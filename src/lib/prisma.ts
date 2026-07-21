@@ -10,7 +10,7 @@ if (!pgUrl) {
   throw new Error('POSTGRES_URL or DATABASE_URL environment variable is required')
 }
 
-const cleanUrl = pgUrl.replace(/sslmode=[^&]*/, 'sslmode=require')
+const cleanUrl = pgUrl.replace(/sslmode=[^&]*/, 'sslmode=no-verify')
 
 const useSsl = cleanUrl.includes('supabase.co')
 
