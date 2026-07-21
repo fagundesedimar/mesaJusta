@@ -10,14 +10,11 @@ if (!pgUrl) {
   throw new Error('POSTGRES_URL or DATABASE_URL environment variable is required')
 }
 
-const cleanUrl = pgUrl.replace(/sslmode=[^&]*/, 'sslmode=require')
-
-const useSsl = cleanUrl.includes('supabase.co')
+const cleanUrl = pgUrl.replace(/sslmode=[^&]*/, 'sslmode=no-verify')
 
 const pool = new Pool({
   connectionString: cleanUrl,
   connectionTimeoutMillis: 15000,
-  ssl: useSsl ? { rejectUnauthorized: false } : undefined,
 })
 
 export const prisma = globalForPrisma.prisma ?? new PrismaClient({
