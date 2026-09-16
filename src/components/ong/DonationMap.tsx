@@ -23,6 +23,15 @@ interface Props {
 
 const DEFAULT_ZOOM = 13
 
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
 const ongIcon = L.divIcon({
   className: 'map-pin map-pin--ong',
   html: '<div class="map-pin__circle map-pin__circle--ong"></div>',
@@ -76,13 +85,16 @@ export default function DonationMap({ centerLat, centerLng, donations, onReserve
     const markers = donations
       .filter((d) => d.latitude != null && d.longitude != null)
       .map((d) => {
+        const safeName = escapeHtml(d.name)
+        const safeCategory = escapeHtml(d.category)
+        const safeId = escapeHtml(d.id)
         const popupContent = `
           <div class="map-popup">
-            <strong>${d.name}</strong><br/>
-            Categoria: ${d.category}<br/>
+            <strong>${safeName}</strong><br/>
+            Categoria: ${safeCategory}<br/>
             Peso: ${d.weightKg} kg<br/>
             ${d.distanceKm != null ? `Distância: ${d.distanceKm.toFixed(1)} km<br/>` : ''}
-            <button class="map-popup__btn" data-id="${d.id}">Reservar Lote</button>
+            <button class="map-popup__btn" data-id="${safeId}">Reservar Lote</button>
           </div>
         `
 
@@ -91,7 +103,10 @@ export default function DonationMap({ centerLat, centerLng, donations, onReserve
           .bindPopup(popupContent)
 
         marker.on('popupopen', () => {
-          const btn = document.querySelector(`.map-popup__btn[data-id="${d.id}"]`)
+          const buttons = Array.from(
+            document.querySelectorAll<HTMLElement>('.map-popup__btn')
+          )
+          const btn = buttons.find((el) => el.dataset.id === safeId)
           btn?.addEventListener('click', () => onReserve(d.id))
         })
 

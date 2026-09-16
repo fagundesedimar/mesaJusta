@@ -18,7 +18,8 @@
     "test:integration": "vitest run src/__tests__/integration/",
     "test:contract": "vitest run src/__tests__/contract/",
     "test:e2e": "playwright test",
-    "sonar": "node scripts/sonar.js"
+    "sonar": "node scripts/sonar.js",
+    "mcp": "node server/index.mjs"
   },
   "repository": {
     "type": "git",
@@ -52,6 +53,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
     "@pact-foundation/pact": "^16.5.0",
     "@playwright/test": "^1.61.1",
     "@testing-library/jest-dom": "^6.9.1",

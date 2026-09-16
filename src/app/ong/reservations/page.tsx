@@ -34,6 +34,10 @@ export default function OngReservationsPage() {
     setError(null)
     try {
       const res = await fetch('/api/v1/reservations')
+      if (res.status === 401) {
+        window.location.href = '/login'
+        return
+      }
       if (!res.ok) {
         const data = await res.json()
         setError(data.error ?? 'Erro ao carregar reservas.')

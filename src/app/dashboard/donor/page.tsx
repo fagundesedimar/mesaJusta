@@ -18,6 +18,10 @@ export default function DonorDashboardPage() {
   const fetchDonations = useCallback(async () => {
     try {
       const res = await fetch('/api/v1/donations')
+      if (res.status === 401) {
+        window.location.href = '/login'
+        return
+      }
       if (res.ok) {
         const data = await res.json()
         setDonations(data.donations ?? data)
@@ -37,7 +41,13 @@ export default function DonorDashboardPage() {
 
   useEffect(() => {
     fetch('/api/v1/gamification/ranking')
-      .then((res) => res.ok ? res.json() : null)
+      .then((res) => {
+        if (res.status === 401) {
+          window.location.href = '/login'
+          return null
+        }
+        return res.ok ? res.json() : null
+      })
       .then((data) => {
         if (data) setRanking(data.data ?? [])
       })

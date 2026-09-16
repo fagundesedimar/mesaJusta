@@ -7,6 +7,7 @@ const PUBLIC_ROUTES = ['/login', '/register']
 const AUTH_API_PREFIX = '/api/v1/auth'
 const DASHBOARD_PREFIX = '/dashboard'
 const ADMIN_PREFIX = '/admin'
+const ONG_PREFIX = '/ong'
 const API_PREFIX = '/api/v1'
 
 const ROLE_LEVELS: Record<string, number> = {
@@ -22,13 +23,14 @@ export async function middleware(request: NextRequest) {
   const isAuthApi = pathname.startsWith(AUTH_API_PREFIX)
   const isDashboardRoute = pathname.startsWith(DASHBOARD_PREFIX)
   const isAdminRoute = pathname.startsWith(ADMIN_PREFIX)
+  const isOngRoute = pathname.startsWith(ONG_PREFIX)
   const isApiRoute = pathname.startsWith(API_PREFIX)
 
   if (isPublicRoute || isAuthApi) {
     return NextResponse.next()
   }
 
-  if (!isDashboardRoute && !isAdminRoute && !isApiRoute) {
+  if (!isDashboardRoute && !isAdminRoute && !isOngRoute && !isApiRoute) {
     return NextResponse.next()
   }
 
@@ -51,7 +53,17 @@ export async function middleware(request: NextRequest) {
   }
 
   if (isAdminRoute && ROLE_LEVELS[payload.role] < ROLE_LEVELS.ADMIN) {
-    return NextResponse.json({ error: 'Acesso proibido.' }, { status: 403 })
+    if (isApiRoute) {
+      return NextResponse.json({ error: 'Acesso proibido.' }, { status: 403 })
+    }
+    return NextResponse.redirect(new URL('/login', request.url))
+  }
+
+  if (isOngRoute && payload.role !== 'ONG' && payload.role !== 'ADMIN') {
+    if (isApiRoute) {
+      return NextResponse.json({ error: 'Acesso proibido.' }, { status: 403 })
+    }
+    return NextResponse.redirect(new URL('/login', request.url))
   }
 
   return NextResponse.next()
@@ -61,6 +73,7 @@ export const config = {
   matcher: [
     '/dashboard/:path*',
     '/admin/:path*',
+    '/ong/:path*',
     '/api/v1/:path*',
   ],
 }

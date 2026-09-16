@@ -48,7 +48,11 @@ export default function AuthPage() {
         return
       }
 
-      router.push('/dashboard')
+      const data = await res.json()
+      const role = data.role as string | undefined
+      if (role === 'ONG') router.push('/ong/dashboard')
+      else if (role === 'ADMIN') router.push('/admin/dashboard')
+      else router.push('/dashboard/donor')
     } catch {
       setError('Erro de conexão. Tente novamente.')
     } finally {

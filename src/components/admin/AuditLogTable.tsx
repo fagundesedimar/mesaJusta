@@ -33,6 +33,10 @@ export default function AuditLogTable() {
       if (endDate) params.set('endDate', endDate)
 
       const res = await fetch(`/api/v1/admin/audit-logs?${params}`)
+      if (res.status === 401 || res.status === 403) {
+        window.location.href = '/login'
+        return
+      }
       if (res.ok) {
         const json = await res.json()
         setData(json.data)

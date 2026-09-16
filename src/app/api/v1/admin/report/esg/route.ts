@@ -5,6 +5,8 @@ import { COOKIE_NAME } from '@/lib/auth/cookie'
 import { calcMeals, calcCO2eq, calcTons } from '@/lib/esg/formulas'
 import { generateESGReport } from '@/lib/pdf/esg-report'
 
+export const runtime = 'nodejs'
+
 export async function GET(request: NextRequest) {
   try {
     const tokenCookie = request.cookies.get(COOKIE_NAME)?.value

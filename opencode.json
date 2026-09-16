@@ -48,6 +48,14 @@
         "SonarSource/sonarqube-mcp-server"
       ],
       "enabled": true
+    },
+    "mesa-justa": {
+      "type": "local",
+      "command": [
+        "node",
+        "server/index.mjs"
+      ],
+      "enabled": true
     }
   },
   "tools": {

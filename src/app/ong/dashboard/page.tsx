@@ -32,6 +32,10 @@ export default function OngDashboardPage() {
     (async () => {
       try {
         const res = await fetch('/api/v1/auth/me')
+        if (res.status === 401) {
+          window.location.href = '/login'
+          return
+        }
         if (res.ok) {
           const data = await res.json()
           if (data.user?.latitude != null && data.user?.longitude != null) {
@@ -55,6 +59,10 @@ export default function OngDashboardPage() {
       }
 
       const res = await fetch(url)
+      if (res.status === 401) {
+        window.location.href = '/login'
+        return
+      }
       if (res.ok) {
         const data = await res.json()
         setDonations(data.donations ?? [])

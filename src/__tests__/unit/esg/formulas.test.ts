@@ -17,8 +17,8 @@ describe('calcMoedasVerdes', () => {
     expect(calcMoedasVerdes(0, 'Hortifrúti')).toBe(0)
   })
 
-  it('handles fractional weight', () => {
-    expect(calcMoedasVerdes(2.5, 'Proteínas')).toBe(37.5)
+  it('handles fractional weight with floor rounding', () => {
+    expect(calcMoedasVerdes(2.5, 'Proteínas')).toBe(37)
   })
 })
 

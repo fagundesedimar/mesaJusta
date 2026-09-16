@@ -163,6 +163,13 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    if (!created) {
+      return NextResponse.json(
+        { error: 'Não foi possível completar a reserva. Tente novamente.' },
+        { status: 409 }
+      )
+    }
+
     const expiresAt = await prisma.donation.findUnique({
       where: { id: donationId },
       select: { expiresAt: true },

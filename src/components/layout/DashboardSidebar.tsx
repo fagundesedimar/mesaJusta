@@ -11,7 +11,6 @@ interface SidebarLink {
 
 const DONOR_LINKS: SidebarLink[] = [
   { href: '/dashboard/donor', label: 'Dashboard' },
-  { href: '/dashboard', label: 'Minhas Doações' },
 ]
 
 const ONG_LINKS: SidebarLink[] = [
@@ -30,7 +29,13 @@ export default function DashboardSidebar() {
 
   useEffect(() => {
     fetch('/api/v1/auth/me')
-      .then((res) => res.ok ? res.json() : null)
+      .then((res) => {
+        if (res.status === 401) {
+          window.location.href = '/login'
+          return null
+        }
+        return res.ok ? res.json() : null
+      })
       .then((data) => {
         if (data?.user) {
           const role = data.user.role
