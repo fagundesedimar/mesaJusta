@@ -7,13 +7,56 @@
   - Environments: .env
 
  ✓ Starting...
-(node:8456) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(node:3040) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
 (Use `node --trace-warnings ...` to show where the warning was created)
- ✓ Ready in 4.3s
+ ✓ Ready in 4.1s
  ○ Compiling / ...
- ✓ Compiled / in 1795ms (498 modules)
- GET / 307 in 3642ms
+ ✓ Compiled / in 1153ms (498 modules)
+ GET / 307 in 1677ms
  ○ Compiling /login ...
- ✓ Compiled /login in 1352ms (512 modules)
- GET /login 200 in 1557ms
-[?25h
+ ✓ Compiled /login in 774ms (512 modules)
+ GET /login 200 in 985ms
+ ○ Compiling /register ...
+ ✓ Compiled /register in 646ms (514 modules)
+ GET /register 307 in 793ms
+ ✓ Compiled /src/middleware in 220ms (171 modules)
+ ○ Compiling /api/v1/auth/me ...
+ ✓ Compiled /api/v1/auth/me in 531ms (387 modules)
+ GET /api/v1/auth/me 401 in 2376ms
+ ✓ Compiled /api/v1/auth/test-db in 150ms (389 modules)
+ GET /api/v1/auth/test-db 200 in 2138ms
+ GET /api/v1/auth/test-db 200 in 2490ms
+ GET / 307 in 133ms
+ GET /register 307 in 132ms
+ GET / 307 in 78ms
+ GET /login 200 in 64ms
+ GET / 307 in 68ms
+ GET /login 200 in 44ms
+ GET / 307 in 68ms
+ GET /login 200 in 55ms
+ ○ Compiling /api/v1/auth/login ...
+ ✓ Compiled /api/v1/auth/login in 1138ms (1096 modules)
+ POST /api/v1/auth/login 401 in 3539ms
+ POST /api/v1/auth/login 200 in 2985ms
+ POST /api/v1/auth/login 401 in 500ms
+ POST /api/v1/auth/login 401 in 417ms
+ POST /api/v1/auth/login 401 in 423ms
+ POST /api/v1/auth/login 200 in 1773ms
+ POST /api/v1/auth/login 401 in 498ms
+ POST /api/v1/auth/login 401 in 416ms
+ POST /api/v1/auth/login 401 in 422ms
+ POST /api/v1/auth/login 401 in 1690ms
+ POST /api/v1/auth/login 401 in 420ms
+ POST /api/v1/auth/login 401 in 2725ms
+ POST /api/v1/auth/login 401 in 1705ms
+ ✓ Compiled in 993ms (275 modules)
+ GET /login 200 in 335ms
+ ○ Compiling /api/v1/auth/login ...
+ ✓ Compiled /api/v1/auth/login in 982ms (1089 modules)
+ POST /api/v1/auth/login 401 in 5630ms
+ ✓ Compiled / in 168ms (1096 modules)
+ GET / 307 in 1144ms
+ GET /login 200 in 89ms
+ GET /login 200 in 59ms
+ POST /api/v1/auth/login 401 in 5328ms
+ ✓ Compiled in 310ms (275 modules)

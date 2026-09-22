@@ -78,6 +78,8 @@ npm run dev
 npm run dev:electron
 ```
 
+> **Execução local pelo agente**: Quando o usuário solicitar que o agente rode a aplicação localmente, o agente deve executar `npm run dev` de forma autônoma, sem exigir que o usuário rode o comando. O hook `predev` já executa o seed idempotente automaticamente antes de subir o servidor. Se já houver um servidor dev ativo na porta 3000, o agente deve reportar a instância em execução e somente reiniciar (matar o processo anterior) se o usuário solicitar.
+
 ### Build da Aplicação:
 ```bash
 # Compilar build estático/servidor do Next.js
@@ -137,6 +139,7 @@ Ao final de cada ciclo de alteração de código ou de documentação, o agente 
 2.  **Sugerir Atualização de Regras**: Caso identifique um padrão repetitivo de erro, uma limitação do compilador, ou uma regra de estilo não mapeada, deve propor e inserir uma nova diretriz de desenvolvimento neste arquivo (`AGENTS.md`) sob a seção **"Histórico de Evolução de Regras"** abaixo.
 
 ### Histórico de Evolução de Regras:
+-   *(V1.4 - 21/09/2026)*: (1) `prisma/seed.ts` tornado **idempotente** (upsert por email, sem `deleteMany` de usuários) e conectado aos scripts `predev`/`predev:electron` — todo `npm run dev` garante usuários de teste sem apagar dados criados. (2) Correção de TLS local: o `sslmode=require` presente na `DATABASE_URL` do Supabase faz o `pg` v8 forçar `verify-full` e quebrar conexões locais — script local deve remover o parâmetro `sslmode` da URL e usar `Pool({ ssl: { rejectUnauthorized: false } })`. (3) Regra de execução autônoma: quando o usuário pedir o agente para rodar a aplicação, executar `npm run dev` diretamente (hook `predev` cobre o seed), reportando servidor já ativo na porta 3000 sem matá-lo, exceto se o usuário solicitar reinício.
 -   *(V1.3 - 29/06/2026)*: Aprendizado sobre testing no Windows: `curl.exe` no PowerShell com backtick-escaping (`{`"key`":`"value`"}`) produz JSON malformado (erro "Expected property name or '}' in JSON at position 1"). Sempre usar `[System.Net.WebRequest]` ou JSON inline com `$json = '{"key":"value"}'` para testar APIs de produção. Nunca confiar em 500 vindo de `curl.exe` no PowerShell sem verificar a requisição primeiro. Também: páginas `○ (Static)` com `<Link prefetch>` podem cachear redirect do middleware para usuários não autenticados — usar `force-dynamic` no layout e `prefetch={false}` nos links do dashboard para garantir que toda navegação passe pelo middleware.
 -   *(V1.2 - 26/06/2026)*: Aprendizados de deploy Vercel + Supabase: (1) Sempre usar `POSTGRES_URL` da integração Supabase-Vercel pois contém pooler host IPv4 — `DATABASE_URL` e `POSTGRES_HOST` têm host direto IPv6 (inacessível da Vercel). (2) `pg` v8 trata `sslmode=require` como `verify-full` — substituir por `sslmode=no-verify`. (3) Supavisor pooler exige o param `supa=base-pooler.x` na URL para identificar tenant — conexões com host/port/user isolados falham. (4) Deploy confiável via `vercel deploy --token --prod --yes` (CLI, não push GitHub). (5) `vercel logs` pode não exibir erros de runtime — manter endpoint de diagnóstico (`/api/v1/auth/test-db`).
 -   *(V1.1 - 15/06/2026)*: Aumento de autonomia do agente para operações locais de leitura, escrita e edição de arquivos (como correção de sintaxe e documentação), mantendo regras restritas para comandos destrutivos.

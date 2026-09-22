@@ -52,9 +52,13 @@ describe('POST /api/v1/auth/login', () => {
     expect(data.email).toBe('login@test.com')
     expect(data.role).toBe('DONOR')
     expect(data.name).toBe('Login User')
-    expect(res.headers.getSetCookie()).toHaveLength(1)
-    expect(res.headers.getSetCookie()[0]).toContain('auth_token')
-    expect(res.headers.getSetCookie()[0]).toContain('HttpOnly')
+    expect(res.headers.getSetCookie().length).toBe(2)
+    const cookies = res.headers.getSetCookie().map((c) => c.split(';')[0])
+    expect(cookies.some((c) => c.startsWith('auth_token'))).toBe(true)
+    expect(cookies.some((c) => c.startsWith('refresh_token'))).toBe(true)
+    for (const setCookie of res.headers.getSetCookie()) {
+      expect(setCookie).toContain('HttpOnly')
+    }
   })
 
   it('returns 401 for wrong password', async () => {
