@@ -60,3 +60,17 @@
  GET /login 200 in 59ms
  POST /api/v1/auth/login 401 in 5328ms
  ✓ Compiled in 310ms (275 modules)
+ ✓ Compiled /api/v1/auth/login in 358ms (1089 modules)
+ POST /api/v1/auth/login 200 in 5339ms
+ ○ Compiling /dashboard/donor ...
+ ✓ Compiled /dashboard/donor in 13.5s (1594 modules)
+ ○ Compiling /api/v1/donations ...
+ ✓ Compiled /api/v1/donations in 653ms (1209 modules)
+ ✓ Compiled (1219 modules)
+ POST /api/v1/auth/login 200 in 6682ms
+ GET /api/v1/gamification/ranking 200 in 16336ms
+ GET /api/v1/gamification/ranking 200 in 617ms
+ GET /api/v1/auth/me 200 in 18437ms
+ GET /api/v1/auth/me 200 in 428ms
+ GET /api/v1/donations 200 in 19086ms
+ GET /api/v1/donations 200 in 1017ms
