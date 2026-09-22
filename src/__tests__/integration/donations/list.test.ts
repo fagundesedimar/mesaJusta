@@ -50,6 +50,18 @@ beforeAll(async () => {
     },
   })
 
+  // Create expired reserved donation
+  await prisma.donation.create({
+    data: {
+      name: 'Vencido reservado',
+      category: 'Mercearia',
+      weightKg: 6,
+      expiresAt: new Date('2020-01-01'),
+      status: 'RESERVED',
+      donorId,
+    },
+  })
+
   // Create active donation
   await prisma.donation.create({
     data: {
@@ -90,6 +102,17 @@ describe('GET /api/v1/donations', () => {
     const data = await res.json()
 
     const expired = data.donations.find((d: any) => d.name === 'Vencido')
+    expect(expired.status).toBe('EXPIRED')
+  })
+
+  it('expires overdue RESERVED donations before returning', async () => {
+    const res = await fetch(`${API_BASE}`, {
+      headers: { Cookie: `auth_token=${donorToken}` },
+    })
+    expect(res.status).toBe(200)
+    const data = await res.json()
+
+    const expired = data.donations.find((d: any) => d.name === 'Vencido reservado')
     expect(expired.status).toBe('EXPIRED')
   })
 

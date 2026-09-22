@@ -5,6 +5,7 @@ import { verifyToken } from '@/lib/auth/token'
 import { COOKIE_NAME } from '@/lib/auth/cookie'
 import { calcMoedasVerdes } from '@/lib/esg/formulas'
 import { geocodeAddress } from '@/lib/geo/nominatim'
+import { expireDueDonations } from '@/lib/donations/expiry'
 
 async function authenticate(request: NextRequest) {
   const tokenCookie = request.cookies.get(COOKIE_NAME)?.value
@@ -98,13 +99,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ error: 'Parâmetros inválidos.' }, { status: 422 })
       }
 
-      await prisma.donation.updateMany({
-        where: {
-          status: 'AVAILABLE',
-          expiresAt: { lt: new Date() },
-        },
-        data: { status: 'EXPIRED' },
-      })
+      await expireDueDonations(prisma)
 
       const donations = await prisma.$queryRaw<Array<Record<string, unknown>>>`
         SELECT
@@ -135,13 +130,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ donations })
     }
 
-    await prisma.donation.updateMany({
-      where: {
-        status: { in: ['AVAILABLE', 'RESERVED'] },
-        expiresAt: { lt: new Date() },
-      },
-      data: { status: 'EXPIRED' },
-    })
+    await expireDueDonations(prisma)
 
     if (payload.role === 'DONOR') {
       const [donations, user] = await Promise.all([

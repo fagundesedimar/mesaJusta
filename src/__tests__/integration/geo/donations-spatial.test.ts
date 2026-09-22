@@ -86,6 +86,16 @@ beforeAll(async () => {
         latitude: -24.0,
         longitude: -47.0,
       },
+      {
+        name: 'Reservada vencida',
+        category: 'Hortifrúti',
+        weightKg: 2,
+        expiresAt: new Date('2020-01-01'),
+        status: 'RESERVED',
+        donorId: donor.id,
+        latitude: -23.551,
+        longitude: -46.634,
+      },
     ],
   })
 
@@ -131,6 +141,19 @@ describe('GET /api/v1/donations?lat&lng&radius', () => {
     expect(res.status).toBe(200)
     const body = await res.json()
     expect(body.donations.length).toBe(1)
+  })
+
+  it('expires overdue RESERVED donations before returning the map result', async () => {
+    const res = await fetch(
+      `${API_BASE}?lat=-23.5505&lng=-46.6333&radius=10`,
+      { headers: { Cookie: `auth_token=${ongToken}` } }
+    )
+    expect(res.status).toBe(200)
+
+    const expired = await prisma.donation.findFirst({
+      where: { name: 'Reservada vencida' },
+    })
+    expect(expired?.status).toBe('EXPIRED')
   })
 
   it('returns all donations without spatial params', async () => {
