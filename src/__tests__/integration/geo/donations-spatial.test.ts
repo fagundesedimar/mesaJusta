@@ -73,8 +73,8 @@ beforeAll(async () => {
         expiresAt: new Date('2030-12-31'),
         status: 'AVAILABLE',
         donorId: donor.id,
-        latitude: -23.65,
-        longitude: -46.73,
+        latitude: -23.60,
+        longitude: -46.68,
       },
       {
         name: 'Fora do raio',
@@ -160,7 +160,12 @@ describe('GET /api/v1/donations?lat&lng&radius', () => {
     const res = await fetch(API_BASE, {
       headers: { Cookie: `auth_token=${ongToken}` },
     })
-    expect(res.status).toBe(403)
+    expect(res.status).toBe(200)
+    const body = await res.json()
+    expect(body.donations.length).toBeGreaterThanOrEqual(1)
+    for (const d of body.donations) {
+      expect(d.status).toBe('AVAILABLE')
+    }
   })
 
   it('returns 403 for DONOR role with spatial params', async () => {
