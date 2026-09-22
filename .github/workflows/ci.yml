@@ -53,3 +53,6 @@ jobs:
           DATABASE_URL: postgresql://mesajusta:mesajusta_test@localhost:5432/mesajusta_test
           JWT_SECRET: test-jwt-secret
           JWT_REFRESH_SECRET: test-refresh-secret
+
+      - name: Contract Tests
+        run: npm run test:contract

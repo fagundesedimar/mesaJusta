@@ -8,6 +8,10 @@ Este diretório contém os **Architecture Decision Records** do projeto, que reg
 |---|---|---|
 | [ADR-0001](ADR-0001.md) | Monolito Full-Stack com Next.js App Router e wrapper Electron | Aceita |
 | [ADR-0002](ADR-0002.md) | Busca por proximidade com PostGIS (`prisma.$queryRaw`) em vez de Haversine na aplicação | Aceita |
+| [ADR-0003](ADR-0003.md) | Autenticação própria (JWT HS256 + cookie HttpOnly) em vez de provedor terceiro | Aceita |
+| [ADR-0004](ADR-0004.md) | Regra de Moedas Verdes e selos ESG (gamificação) | Aceita |
+| [ADR-0005](ADR-0005.md) | Rate limiting de login com Redis e fallback em memória | Aceita |
+| [ADR-0006](ADR-0006.md) | Wrapper Electron: carregamento estático em produção + CSP rígida + preload isolado | Aceita |
 
 ## Como propor um novo ADR
 
