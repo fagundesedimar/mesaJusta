@@ -7,7 +7,7 @@ import bcrypt from 'bcryptjs'
 const databaseUrl = process.env.DATABASE_URL
 if (!databaseUrl) throw new Error('DATABASE_URL is required')
 
-const pool = new Pool({ connectionString: databaseUrl })
+const pool = new Pool({ connectionString: databaseUrl, ssl: { rejectUnauthorized: false } })
 const prisma = new PrismaClient({ adapter: new PrismaPg(pool) })
 
 async function seed() {
@@ -121,12 +121,12 @@ async function seed() {
 
   console.log('Criando doações...')
 
-  const categories = ['Refeições Prontas', 'Proteínas', 'Grãos', 'Hortifrúti', 'Laticínios', 'Panificados']
+  const categories = ['Refeições Prontas', 'Proteínas', 'Mercearia', 'Hortifrúti', 'Laticínios', 'Panificados']
   const now = new Date()
 
   const donationsData = [
-    { donorId: donor1.id, name: 'Arroz 5kg', category: 'Grãos', weightKg: 5, expiresDays: 180 },
-    { donorId: donor1.id, name: 'Feijão 2kg', category: 'Grãos', weightKg: 2, expiresDays: 365 },
+    { donorId: donor1.id, name: 'Arroz 5kg', category: 'Mercearia', weightKg: 5, expiresDays: 180 },
+    { donorId: donor1.id, name: 'Feijão 2kg', category: 'Mercearia', weightKg: 2, expiresDays: 365 },
     { donorId: donor1.id, name: 'Pão Francês (30 unid)', category: 'Panificados', weightKg: 1.5, expiresDays: 1 },
     { donorId: donor1.id, name: 'Leite 1L (6 unid)', category: 'Laticínios', weightKg: 6, expiresDays: 7 },
     { donorId: donor1.id, name: 'Macarrão 500g (10 pacotes)', category: 'Refeições Prontas', weightKg: 5, expiresDays: 365 },

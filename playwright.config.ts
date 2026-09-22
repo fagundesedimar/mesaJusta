@@ -1,11 +1,19 @@
 import { defineConfig, devices } from '@playwright/test'
 import dotenv from 'dotenv'
+import fs from 'fs'
 import path from 'path'
 
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
+ *
+ * `.env.e2e` (if present) is loaded first so the E2E run can point the
+ * dev server to an isolated test database and relax rate limits.
  */
+const envE2e = path.resolve(__dirname, '.env.e2e')
+if (fs.existsSync(envE2e)) {
+  dotenv.config({ path: envE2e })
+}
 dotenv.config({ path: path.resolve(__dirname, '.env') })
 
 const FRONTEND_PORT = process.env.FRONTEND_PORT ?? '3000'

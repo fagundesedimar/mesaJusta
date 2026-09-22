@@ -1,6 +1,6 @@
 const WINDOW_MS = 15 * 60 * 1000
-export const EMAIL_MAX_ATTEMPTS = 10
-export const IP_MAX_ATTEMPTS = 30
+export const EMAIL_MAX_ATTEMPTS = Number(process.env.EMAIL_MAX_ATTEMPTS ?? 10)
+export const IP_MAX_ATTEMPTS = Number(process.env.IP_MAX_ATTEMPTS ?? 30)
 
 const redisPrefix = 'mesajusta:rl'
 
