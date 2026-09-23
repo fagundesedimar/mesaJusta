@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import NewDonationModal from '@/components/donations/NewDonationModal'
+import ConfirmDeliveryModal from '@/components/donations/ConfirmDeliveryModal'
 import '@/components/donations/NewDonationModal.css'
 
 interface Donation {
@@ -34,6 +35,7 @@ const STATUS_COLOR: Record<string, string> = {
 
 export default function DonationsTable({ donations, onRefresh }: Props) {
   const [showModal, setShowModal] = useState(false)
+  const [confirmTarget, setConfirmTarget] = useState<Donation | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<Donation | null>(null)
   const [deleting, setDeleting] = useState(false)
 
@@ -96,6 +98,14 @@ export default function DonationsTable({ donations, onRefresh }: Props) {
                 </span>
               </td>
               <td>
+                {d.status === 'RESERVED' && (
+                  <button
+                    className="btn-confirm"
+                    onClick={() => setConfirmTarget(d)}
+                  >
+                    Confirmar Entrega
+                  </button>
+                )}
                 {d.status === 'AVAILABLE' && (
                   <button
                     className="btn-delete"
@@ -114,6 +124,14 @@ export default function DonationsTable({ donations, onRefresh }: Props) {
         <NewDonationModal
           onClose={() => setShowModal(false)}
           onSuccess={() => { setShowModal(false); onRefresh() }}
+        />
+      )}
+
+      {confirmTarget && (
+        <ConfirmDeliveryModal
+          donationId={confirmTarget.id}
+          onClose={() => setConfirmTarget(null)}
+          onSuccess={() => { setConfirmTarget(null); onRefresh() }}
         />
       )}
 
