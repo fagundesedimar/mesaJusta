@@ -75,6 +75,7 @@ export default function DashboardSidebar() {
         </div>
         <Link
           href="/api/v1/auth/logout"
+          prefetch={false}
           className="sidebar__link"
           style={{ padding: '0.5rem 0', fontSize: '0.8rem' }}
           aria-label="Sair da conta"
