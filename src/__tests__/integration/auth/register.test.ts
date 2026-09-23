@@ -1,20 +1,15 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest'
-import { prisma } from '@/lib/prisma'
+import { removeTestUsersByEmail } from '@/__tests__/integration/helpers/cleanup'
 
 const API_BASE = 'http://localhost:3000/api/v1/auth'
+const TEST_EMAILS = ['joao@test.com']
 
 beforeAll(async () => {
-  await prisma.auditLog.deleteMany()
-  await prisma.donation.deleteMany()
-  await prisma.profile.deleteMany()
-  await prisma.user.deleteMany()
+  await removeTestUsersByEmail(TEST_EMAILS)
 })
 
 afterAll(async () => {
-  await prisma.auditLog.deleteMany().catch(() => {})
-  await prisma.donation.deleteMany().catch(() => {})
-  await prisma.profile.deleteMany().catch(() => {})
-  await prisma.user.deleteMany().catch(() => {})
+  await removeTestUsersByEmail(TEST_EMAILS).catch(() => {})
 })
 
 describe('POST /api/v1/auth/register', () => {

@@ -2,26 +2,26 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import { prisma } from '@/lib/prisma'
 import { hashPassword } from '@/lib/auth/password'
 import { signToken } from '@/lib/auth/token'
+import { removeTestUsersByEmail } from '@/__tests__/integration/helpers/cleanup'
 
 const API_BASE = 'http://localhost:3000/api/v1/reservations'
+const TEST_EMAILS = ['donor-confirm@test.com', 'ong-confirm@test.com']
 
 let donorToken: string
 let donationId: string
 let ongDonationId: string
 let expiredDonationId: string
+let wrongTokenDonationId: string
 
 beforeAll(async () => {
-  await prisma.auditLog.deleteMany()
-  await prisma.donation.deleteMany()
-  await prisma.profile.deleteMany()
-  await prisma.user.deleteMany()
+  await removeTestUsersByEmail(TEST_EMAILS)
 
   const donorHash = await hashPassword('donor123')
   const ongHash = await hashPassword('ong123')
 
   const donor = await prisma.user.create({
     data: {
-      email: 'donor@test.com',
+      email: 'donor-confirm@test.com',
       passwordHash: donorHash,
       role: 'DONOR',
       profile: { create: { name: 'Donor', document: '12345678901', zipCode: '01001000', state: 'SP', profileType: 'DONOR' } },
@@ -30,7 +30,7 @@ beforeAll(async () => {
 
   const ong = await prisma.user.create({
     data: {
-      email: 'ong@test.com',
+      email: 'ong-confirm@test.com',
       passwordHash: ongHash,
       role: 'ONG',
       profile: { create: { name: 'Ong', document: '12345678901234', zipCode: '01001000', state: 'SP', profileType: 'ONG' } },
@@ -53,13 +53,15 @@ beforeAll(async () => {
     data: { name: 'Teste', category: 'Mercearia', weightKg: 5, expiresAt: new Date('2030-12-31'), status: 'COLLECTED', donorId: donor.id, reservedByOngId: ong.id },
   })
   expiredDonationId = d3.id
+
+  const d4 = await prisma.donation.create({
+    data: { name: 'Teste', category: 'Mercearia', weightKg: 5, expiresAt: new Date('2030-12-31'), status: 'RESERVED', reservationToken: 'GOOD777', donorId: donor.id, reservedByOngId: ong.id },
+  })
+  wrongTokenDonationId = d4.id
 })
 
 afterAll(async () => {
-  await prisma.auditLog.deleteMany()
-  await prisma.donation.deleteMany()
-  await prisma.profile.deleteMany()
-  await prisma.user.deleteMany()
+  await removeTestUsersByEmail(TEST_EMAILS).catch(() => {})
 })
 
 describe('POST /api/v1/reservations/confirm', () => {
@@ -95,7 +97,7 @@ describe('POST /api/v1/reservations/confirm', () => {
         'Content-Type': 'application/json',
         Cookie: `auth_token=${donorToken}`,
       },
-      body: JSON.stringify({ donationId, token: 'WRONG6' }),
+      body: JSON.stringify({ donationId: wrongTokenDonationId, token: 'WRONG6' }),
     })
     expect(res.status).toBe(400)
     const data = await res.json()

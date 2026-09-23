@@ -2,24 +2,24 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import { prisma } from '@/lib/prisma'
 import { hashPassword } from '@/lib/auth/password'
 import { signToken } from '@/lib/auth/token'
+import { removeTestUsersByEmail } from '@/__tests__/integration/helpers/cleanup'
 
 const API_BASE = 'http://localhost:3000/api/v1/donations'
+const TEST_EMAILS = ['donor-create@test.com', 'ong-create@test.com']
 
 let donorToken: string
 let ongToken: string
 let donorId: string
 
 beforeAll(async () => {
-  await prisma.donation.deleteMany()
-  await prisma.profile.deleteMany()
-  await prisma.user.deleteMany()
+  await removeTestUsersByEmail(TEST_EMAILS)
 
   const donorHash = await hashPassword('donor123')
   const ongHash = await hashPassword('ong123')
 
   const donor = await prisma.user.create({
     data: {
-      email: 'donor@test.com',
+      email: 'donor-create@test.com',
       passwordHash: donorHash,
       role: 'DONOR',
       profile: { create: { name: 'Donor', document: '12345678901', zipCode: '01001000', state: 'SP', profileType: 'DONOR' } },
@@ -29,7 +29,7 @@ beforeAll(async () => {
 
   const ong = await prisma.user.create({
     data: {
-      email: 'ong@test.com',
+      email: 'ong-create@test.com',
       passwordHash: ongHash,
       role: 'ONG',
       profile: { create: { name: 'Ong', document: '12345678901234', zipCode: '01001000', state: 'SP', profileType: 'ONG' } },
@@ -41,9 +41,7 @@ beforeAll(async () => {
 })
 
 afterAll(async () => {
-  await prisma.donation.deleteMany()
-  await prisma.profile.deleteMany()
-  await prisma.user.deleteMany()
+  await removeTestUsersByEmail(TEST_EMAILS).catch(() => {})
 })
 
 describe('POST /api/v1/donations', () => {

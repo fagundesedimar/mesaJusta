@@ -47,8 +47,13 @@ export async function setup(): Promise<void> {
 }
 
 export async function teardown(): Promise<void> {
-  if (server) {
-    server.kill('SIGTERM')
+  if (server && server.pid) {
+    if (process.platform === 'win32') {
+      spawn('taskkill', ['/pid', String(server.pid), '/T', '/F'], { stdio: 'ignore' })
+    } else {
+      server.kill('SIGTERM')
+    }
     server = null
   }
+  await new Promise((resolve) => setTimeout(resolve, 500))
 }

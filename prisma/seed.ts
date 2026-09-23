@@ -115,11 +115,15 @@ async function seed() {
     { donorId: donor2.id, name: 'Iogurte Natural (12 unid)', category: 'Laticínios', weightKg: 3, expiresDays: 14, latitude: -23.5600, longitude: -46.6550 },
   ]
 
-  await prisma.donation.deleteMany({ where: { donorId: { in: [donor1.id, donor2.id] } } })
-
-  console.log('Criando doações de teste...')
+  console.log('Garantindo doações de teste (idempotente, sem apagar existentes)...')
 
   for (const d of donationsData) {
+    const existing = await prisma.donation.findFirst({
+      where: { donorId: d.donorId, name: d.name },
+    })
+
+    if (existing) continue
+
     const expiresAt = new Date(now)
     expiresAt.setDate(expiresAt.getDate() + d.expiresDays)
 

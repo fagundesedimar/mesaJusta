@@ -2,20 +2,20 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import { prisma } from '@/lib/prisma'
 import { hashPassword } from '@/lib/auth/password'
 import { signToken } from '@/lib/auth/token'
+import { removeTestUsersByEmail } from '@/__tests__/integration/helpers/cleanup'
 
 const API_BASE = 'http://localhost:3000/api/v1/reservations'
+const TEST_EMAILS = ['donor-res@test.com', 'ong-res@test.com']
 
 let ongToken: string
 let donorToken: string
 let availableDonationId: string
 let reservedDonationId: string
+let availableForCancelId: string
 let ongId: string
 
 beforeAll(async () => {
-  await prisma.auditLog.deleteMany()
-  await prisma.donation.deleteMany()
-  await prisma.profile.deleteMany()
-  await prisma.user.deleteMany()
+  await removeTestUsersByEmail(TEST_EMAILS)
 
   const donorHash = await hashPassword('donor123')
   const ongHash = await hashPassword('ong123')
@@ -51,6 +51,17 @@ beforeAll(async () => {
   })
   availableDonationId = available.id
 
+  const availableForCancel = await prisma.donation.create({
+    data: {
+      name: 'Legumes Diversos',
+      category: 'Hortifruti',
+      weightKg: 4,
+      expiresAt: new Date('2030-12-31'),
+      status: 'AVAILABLE',
+      donorId: donor.id,
+    },
+  })
+
   const reserved = await prisma.donation.create({
     data: {
       name: 'Arroz Doação',
@@ -66,15 +77,15 @@ beforeAll(async () => {
   })
   reservedDonationId = reserved.id
 
+  // Reutilizado no teste de 409: esta doação fica AVAILABLE durante toda a suíte
+  availableForCancelId = availableForCancel.id
+
   ongToken = await signToken({ sub: ong.id, email: ong.email, role: 'ONG' })
   donorToken = await signToken({ sub: donor.id, email: donor.email, role: 'DONOR' })
 })
 
 afterAll(async () => {
-  await prisma.auditLog.deleteMany()
-  await prisma.donation.deleteMany()
-  await prisma.profile.deleteMany()
-  await prisma.user.deleteMany()
+  await removeTestUsersByEmail(TEST_EMAILS).catch(() => {})
 })
 
 describe('POST /api/v1/reservations', () => {
@@ -187,7 +198,7 @@ describe('POST /api/v1/reservations/cancel', () => {
         'Content-Type': 'application/json',
         Cookie: `auth_token=${ongToken}`,
       },
-      body: JSON.stringify({ donationId: availableDonationId }),
+      body: JSON.stringify({ donationId: availableForCancelId }),
     })
 
     expect(res.status).toBe(409)

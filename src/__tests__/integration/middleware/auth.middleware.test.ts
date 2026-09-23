@@ -17,16 +17,26 @@ describe('Middleware auth protection', () => {
 
   it('allows access to authenticated route with valid token', async () => {
     const token = await signToken({ sub: 'user-1', email: 'test@test.com', role: 'DONOR' })
-    const res = await fetch(`${API_BASE}/dashboard`, {
+    const res = await fetch(`${API_BASE}/dashboard/donor`, {
       headers: { Cookie: `auth_token=${token}` },
       redirect: 'manual',
     })
     expect(res.status).toBe(200)
   })
 
-  it('returns 403 for DONOR trying to access /admin', async () => {
+  it('redirects DONOR trying to access /admin page to /login', async () => {
     const token = await signToken({ sub: 'user-1', email: 'test@test.com', role: 'DONOR' })
     const res = await fetch(`${API_BASE}/admin`, {
+      headers: { Cookie: `auth_token=${token}` },
+      redirect: 'manual',
+    })
+    expect(res.status).toBe(307)
+    expect(res.headers.get('location')).toContain('/login')
+  })
+
+  it('returns 403 for DONOR trying to access admin API route', async () => {
+    const token = await signToken({ sub: 'user-1', email: 'test@test.com', role: 'DONOR' })
+    const res = await fetch(`${API_BASE}/api/v1/admin/dashboard`, {
       headers: { Cookie: `auth_token=${token}` },
       redirect: 'manual',
     })

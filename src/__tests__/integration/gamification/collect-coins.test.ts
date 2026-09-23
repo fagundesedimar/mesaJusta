@@ -2,8 +2,10 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import { prisma } from '@/lib/prisma'
 import { hashPassword } from '@/lib/auth/password'
 import { signToken } from '@/lib/auth/token'
+import { removeTestUsersByEmail } from '@/__tests__/integration/helpers/cleanup'
 
 const API_BASE = 'http://localhost:3000/api/v1/reservations/confirm'
+const TEST_EMAILS = ['donor-coins@test.com', 'ong-coins@test.com']
 
 let donorToken: string
 let ongToken: string
@@ -13,10 +15,7 @@ let donorId: string
 const VALID_TOKEN = 'ABC123'
 
 beforeAll(async () => {
-  await prisma.donation.deleteMany()
-  await prisma.auditLog.deleteMany()
-  await prisma.profile.deleteMany()
-  await prisma.user.deleteMany()
+  await removeTestUsersByEmail(TEST_EMAILS)
 
   const donorHash = await hashPassword('donor123')
   const ongHash = await hashPassword('ong123')
@@ -75,10 +74,7 @@ beforeAll(async () => {
 })
 
 afterAll(async () => {
-  await prisma.auditLog.deleteMany()
-  await prisma.donation.deleteMany()
-  await prisma.profile.deleteMany()
-  await prisma.user.deleteMany()
+  await removeTestUsersByEmail(TEST_EMAILS).catch(() => {})
 })
 
 describe('POST /api/v1/reservations/confirm — green coins', () => {

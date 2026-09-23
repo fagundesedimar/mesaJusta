@@ -2,17 +2,19 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import { prisma } from '@/lib/prisma'
 import { hashPassword } from '@/lib/auth/password'
 import { signToken } from '@/lib/auth/token'
+import { removeTestUsersByEmail } from '@/__tests__/integration/helpers/cleanup'
 
 const API_BASE = 'http://localhost:3000/api/v1/donations'
 
 let ongToken: string
 let ongId: string
+const TEST_EMAILS = ['ong-geo@test.com', 'donor-geo@test.com', 'donor-spatial-extra@test.com']
+
+const ORIGIN_LAT = -19.9190
+const ORIGIN_LNG = -43.9381
 
 beforeAll(async () => {
-  await prisma.donation.deleteMany()
-  await prisma.auditLog.deleteMany()
-  await prisma.profile.deleteMany()
-  await prisma.user.deleteMany()
+  await removeTestUsersByEmail(TEST_EMAILS)
 
   const hash = await hashPassword('ong123')
 
@@ -21,8 +23,8 @@ beforeAll(async () => {
       email: 'ong-geo@test.com',
       passwordHash: hash,
       role: 'ONG',
-      latitude: -23.5505,
-      longitude: -46.6333,
+      latitude: ORIGIN_LAT,
+      longitude: ORIGIN_LNG,
       profile: {
         create: {
           name: 'ONG Geo',
@@ -63,8 +65,8 @@ beforeAll(async () => {
         expiresAt: new Date('2030-12-31'),
         status: 'AVAILABLE',
         donorId: donor.id,
-        latitude: -23.55,
-        longitude: -46.63,
+        latitude: -19.9190,
+        longitude: -43.9381,
       },
       {
         name: 'Distante',
@@ -73,8 +75,8 @@ beforeAll(async () => {
         expiresAt: new Date('2030-12-31'),
         status: 'AVAILABLE',
         donorId: donor.id,
-        latitude: -23.60,
-        longitude: -46.68,
+        latitude: -19.9400,
+        longitude: -43.9600,
       },
       {
         name: 'Fora do raio',
@@ -83,8 +85,8 @@ beforeAll(async () => {
         expiresAt: new Date('2030-12-31'),
         status: 'AVAILABLE',
         donorId: donor.id,
-        latitude: -24.0,
-        longitude: -47.0,
+        latitude: -21.0,
+        longitude: -46.0,
       },
       {
         name: 'Reservada vencida',
@@ -93,8 +95,8 @@ beforeAll(async () => {
         expiresAt: new Date('2020-01-01'),
         status: 'RESERVED',
         donorId: donor.id,
-        latitude: -23.551,
-        longitude: -46.634,
+        latitude: -19.9192,
+        longitude: -43.9385,
       },
     ],
   })
@@ -103,16 +105,13 @@ beforeAll(async () => {
 })
 
 afterAll(async () => {
-  await prisma.donation.deleteMany().catch(() => {})
-  await prisma.auditLog.deleteMany().catch(() => {})
-  await prisma.profile.deleteMany().catch(() => {})
-  await prisma.user.deleteMany().catch(() => {})
+  await removeTestUsersByEmail(TEST_EMAILS).catch(() => {})
 })
 
 describe('GET /api/v1/donations?lat&lng&radius', () => {
   it('returns donations ordered by distance within radius', async () => {
     const res = await fetch(
-      `${API_BASE}?lat=-23.5505&lng=-46.6333&radius=10`,
+      `${API_BASE}?lat=${ORIGIN_LAT}&lng=${ORIGIN_LNG}&radius=10`,
       { headers: { Cookie: `auth_token=${ongToken}` } }
     )
     expect(res.status).toBe(200)
@@ -135,7 +134,7 @@ describe('GET /api/v1/donations?lat&lng&radius', () => {
 
   it('excludes donations outside the radius', async () => {
     const res = await fetch(
-      `${API_BASE}?lat=-23.5505&lng=-46.6333&radius=2`,
+      `${API_BASE}?lat=${ORIGIN_LAT}&lng=${ORIGIN_LNG}&radius=2`,
       { headers: { Cookie: `auth_token=${ongToken}` } }
     )
     expect(res.status).toBe(200)
@@ -145,7 +144,7 @@ describe('GET /api/v1/donations?lat&lng&radius', () => {
 
   it('expires overdue RESERVED donations before returning the map result', async () => {
     const res = await fetch(
-      `${API_BASE}?lat=-23.5505&lng=-46.6333&radius=10`,
+      `${API_BASE}?lat=${ORIGIN_LAT}&lng=${ORIGIN_LNG}&radius=10`,
       { headers: { Cookie: `auth_token=${ongToken}` } }
     )
     expect(res.status).toBe(200)
@@ -172,7 +171,7 @@ describe('GET /api/v1/donations?lat&lng&radius', () => {
     const donorHash = await hashPassword('test123')
     const donor = await prisma.user.create({
       data: {
-        email: `donor-spatial-${Date.now()}@test.com`,
+        email: 'donor-spatial-extra@test.com',
         passwordHash: donorHash,
         role: 'DONOR',
         profile: {
@@ -193,7 +192,7 @@ describe('GET /api/v1/donations?lat&lng&radius', () => {
     })
 
     const res = await fetch(
-      `${API_BASE}?lat=-23.5505&lng=-46.6333&radius=10`,
+      `${API_BASE}?lat=${ORIGIN_LAT}&lng=${ORIGIN_LNG}&radius=10`,
       { headers: { Cookie: `auth_token=${donorToken}` } }
     )
     expect(res.status).toBe(403)

@@ -2,6 +2,7 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import { prisma } from '@/lib/prisma'
 import { hashPassword } from '@/lib/auth/password'
 import { signToken } from '@/lib/auth/token'
+import { removeTestUsersByEmail } from '@/__tests__/integration/helpers/cleanup'
 
 const API_BASE = 'http://localhost:3000/api/v1/gamification/ranking'
 
@@ -9,9 +10,8 @@ let donorToken: string
 let donorIds: string[]
 
 beforeAll(async () => {
-  await prisma.donation.deleteMany()
-  await prisma.profile.deleteMany()
-  await prisma.user.deleteMany()
+  const rankingEmails = Array.from({ length: 12 }, (_, i) => `donor${i}@test.com`)
+  await removeTestUsersByEmail(rankingEmails)
 
   const hash = await hashPassword('test123')
   donorIds = []
@@ -55,9 +55,8 @@ beforeAll(async () => {
 }, 30000)
 
 afterAll(async () => {
-  await prisma.donation.deleteMany().catch(() => {})
-  await prisma.profile.deleteMany().catch(() => {})
-  await prisma.user.deleteMany().catch(() => {})
+  const rankingEmails = Array.from({ length: 12 }, (_, i) => `donor${i}@test.com`)
+  await removeTestUsersByEmail(rankingEmails).catch(() => {})
 })
 
 describe('GET /api/v1/gamification/ranking', () => {
