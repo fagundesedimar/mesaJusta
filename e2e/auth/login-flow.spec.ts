@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { cleanupTestUser } from '../../../e2e/auth-helpers'
+import { cleanupTestUser } from '../auth-helpers'
 
 test.describe('Login flow', () => {
   const validUser = {
